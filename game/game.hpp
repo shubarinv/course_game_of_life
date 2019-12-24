@@ -15,6 +15,7 @@ private:
 	SDL_DisplayMode DM{};
 	SDL_Window *win{};
 	SDL_Renderer *ren{};
+	bool runGame = false;
 public:
 	Game() {
 		std::cout << "Trying to init SDL2..." << std::endl;
@@ -39,7 +40,30 @@ public:
 			std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
 			throw std::runtime_error("Unable to create render (SDL2)");
 		}
-		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL2 init - Good");
+		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL2 init - Good\nGame Start");
+		run(); // Starts the game
+	}
+
+private:
+	int run() {
+		runGame = true;
+		SDL_Event event;
+		while (runGame) {
+			SDL_PollEvent(&event);
+			/// TODO - Создать класс для отработки событий и вынести это условие туда
+			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
+				runGame = false;
+				SDL_LogInfo(SDL_LOG_CATEGORY_INPUT, "Got QUIT event");
+			}
+
+			SDL_Delay(5); // Decreasing cpu load
+		}
+		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying render");
+		SDL_DestroyRenderer(ren);
+		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Render Destroyed\nDestroying window");
+		SDL_DestroyWindow(win);
+		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroyed window");
+		return 0;
 	}
 };
 
