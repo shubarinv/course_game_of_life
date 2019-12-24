@@ -58,7 +58,8 @@ private:
 		SDL_Event event;
 		while (runGame) {
 			SDL_PollEvent(&event);
-			uiManager->printText("Ban", 100, 100, {0, 255, 0}, 30);
+			uiManager->printText("Тест Вывода русского", 100, 100, {0, 255, 0}, 20);
+			uiManager->printText("English output test", 100, 140, {0, 255, 0}, 20);
 			SDL_RenderPresent(ren);
 			/// TODO - Создать класс для отработки событий и вынести это условие туда
 			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
