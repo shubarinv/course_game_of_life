@@ -11,28 +11,55 @@
 
 class UI_Manager {
 	TTF_Font *font{};
-	SDL_Surface *textSurface{};
-	std::string fontName = "";
+	SDL_Surface *window_surface{};
+	SDL_Renderer *renderer;
+	int fontSize = 16;
+	std::string fontName = "FiraCode-Regular";
 public:
-	UI_Manager() {
+	UI_Manager(SDL_Surface *pSurface, SDL_Renderer *pRenderer) {
+		if (TTF_Init() == -1) {
+			std::string error = TTF_GetError();
+			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
+			throw std::runtime_error("UI_Manager->TTF_OpenFont: Attempt to open font was unsuccessful");
+		}
+
 		font = TTF_OpenFont((fontName + ".ttf").c_str(), 16);
 		if (!font) {
 			std::string error = TTF_GetError();
 			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-			throw std::runtime_error("Attempt to open font was unsuccessful");
+			throw std::runtime_error("UI_Manager->TTF_OpenFont: Attempt to open font was unsuccessful");
 		}
+		window_surface = pSurface;
+		renderer = pRenderer;
 	}
 
-	void printText(const std::string &text, int x, int y, SDL_Color color = {0, 0, 0}) {
-		SDL_Surface *text_surface;
-		if (!(text_surface = TTF_RenderUTF8_Solid(font, text.c_str(), color))) {
+	void changeFontSize(int size) {
+		font = TTF_OpenFont((fontName + ".ttf").c_str(), size);
+		if (!font) {
 			std::string error = TTF_GetError();
 			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-		} else {
-			SDL_BlitSurface(text_surface, nullptr, text_surface, nullptr);
-			//perhaps we can reuse it, but I assume not for simplicity.
-			SDL_FreeSurface(text_surface);
+			throw std::runtime_error("UI_Manager->changeFontSize: Attempt to change font size was unsuccessful");
 		}
+		fontSize = size;
+	}
+
+	void printText(const std::string &text, int x, int y, SDL_Color color = {0, 0, 0},
+	               int font_size = 16) { ///< @warning DO NOT USE RUSSIAN SYMBOLS
+		changeFontSize(font_size);
+		SDL_Surface *surfaceMessage = TTF_RenderText_Blended(font, text.c_str(),
+		                                                     color); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
+		SDL_Texture *Message = SDL_CreateTextureFromSurface(renderer,
+		                                                    surfaceMessage); //now you can convert it into a texture
+		SDL_Rect Message_rect; //create a rect
+		Message_rect.x = x;  //controls the rect's x coordinate
+		Message_rect.y = y; // controls the rect's y coordinte
+		Message_rect.w = fontSize * text.length() * 0.5; // controls the width of the rect
+		Message_rect.h = fontSize; // controls the height of the rect
+		//Mind you that (0,0) is on the top left of the window/screen, think a rect as the text's box, that way it would be very simple to understance
+		//Now since it's a texture, you have to put RenderCopy in your game loop area, the area where the whole code executes
+		SDL_RenderCopy(renderer, Message, nullptr,
+		               &Message_rect); //you put the renderer's name first, the Message, the crop size(you can ignore this if you don't want to dabble with cropping), and the rect which is the size and coordinate of your texture
+
 	}
 };
 

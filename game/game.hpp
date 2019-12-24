@@ -46,7 +46,7 @@ public:
 			throw std::runtime_error("Unable to create render (SDL2)");
 		}
 
-		uiManager = new UI_Manager(); //init UI_Manager and font related stuff
+		uiManager = new UI_Manager(SDL_GetWindowSurface(win), ren); //init UI_Manager and font related stuff
 
 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL2 init - Good\nGame Start");
 		run(); // Starts the game
@@ -58,12 +58,13 @@ private:
 		SDL_Event event;
 		while (runGame) {
 			SDL_PollEvent(&event);
+			uiManager->printText("Ban", 100, 100, {0, 255, 0}, 30);
+			SDL_RenderPresent(ren);
 			/// TODO - Создать класс для отработки событий и вынести это условие туда
 			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
 				runGame = false;
 				SDL_LogInfo(SDL_LOG_CATEGORY_INPUT, "Got QUIT event");
 			}
-
 			SDL_Delay(5); // Decreasing cpu load
 		}
 		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying render");
