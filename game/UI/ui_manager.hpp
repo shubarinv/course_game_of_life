@@ -11,9 +11,8 @@
 
 class UI_Manager {
 	TTF_Font *font{};
-	SDL_Surface *window_surface{};
 	SDL_Renderer *renderer;
-	int fontSize = 16;
+	int fontSize = {};
 	std::string fontName = "Roboto-Medium";
 public:
 	UI_Manager(SDL_Surface *pSurface, SDL_Renderer *pRenderer) {
@@ -29,7 +28,6 @@ public:
 			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
 			throw std::runtime_error("UI_Manager->TTF_OpenFont: Attempt to open font was unsuccessful");
 		}
-		window_surface = pSurface;
 		renderer = pRenderer;
 	}
 
@@ -44,7 +42,7 @@ public:
 	}
 
 	void printText(const std::string &text, int x, int y, SDL_Color color = {0, 0, 0},
-	               int font_size = 16) { ///< @warning DO NOT USE RUSSIAN SYMBOLS
+	               int font_size = 16) {
 		changeFontSize(font_size);
 		SDL_Surface *surfaceMessage = TTF_RenderUTF8_Solid(font, text.c_str(),
 		                                                   color); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first

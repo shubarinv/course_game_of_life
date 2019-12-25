@@ -10,12 +10,14 @@
 #include <iostream>
 #include <stdexcept>
 #include "UI/ui_manager.hpp"
+#include "game_field.hpp"
 
 class Game {
 private:
 	SDL_DisplayMode DM{};
 	SDL_Window *win{};
 	SDL_Renderer *ren{};
+	GameField* gameField{};
 	UI_Manager *uiManager;
 	bool runGame = false;
 public:
@@ -29,7 +31,6 @@ public:
 		SDL_GetCurrentDisplayMode(0, &DM);
 		auto Width = DM.w;
 		auto Height = DM.h;
-
 		win = SDL_CreateWindow("The Game Of Life", 0, 0, 1280, 720, SDL_WINDOW_SHOWN);
 
 		if (win == nullptr) {
@@ -47,7 +48,7 @@ public:
 		}
 
 		uiManager = new UI_Manager(SDL_GetWindowSurface(win), ren); //init UI_Manager and font related stuff
-
+		gameField=new GameField();
 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL2 init - Good\nGame Start");
 		run(); // Starts the game
 	}
@@ -60,14 +61,18 @@ private:
 			SDL_PollEvent(&event);
 			uiManager->printText("Тест Вывода русского", 100, 100, {0, 255, 0}, 20);
 			uiManager->printText("English output test", 100, 140, {0, 255, 0}, 20);
+			gameField->drawBoard();
 			SDL_RenderPresent(ren);
+
 			/// TODO - Создать класс для отработки событий и вынести это условие туда
 			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
 				runGame = false;
 				SDL_LogInfo(SDL_LOG_CATEGORY_INPUT, "Got QUIT event");
 			}
+
 			SDL_Delay(5); // Decreasing cpu load
 		}
+
 		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying render");
 		SDL_DestroyRenderer(ren);
 		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Render Destroyed\nDestroying window");
