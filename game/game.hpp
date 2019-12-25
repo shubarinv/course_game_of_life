@@ -39,7 +39,7 @@ public:
 			throw std::runtime_error("Unable to create window (SDL2)");
 		}
 
-		ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+		ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_SOFTWARE);
 		if (ren == nullptr) {
 			SDL_DestroyWindow(win);
 			std::string error = SDL_GetError();
@@ -48,7 +48,7 @@ public:
 		}
 
 		uiManager = new UI_Manager(SDL_GetWindowSurface(win), ren); //init UI_Manager and font related stuff
-		gameField=new GameField();
+		gameField=new GameField(win);
 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL2 init - Good\nGame Start");
 		run(); // Starts the game
 	}
@@ -59,8 +59,6 @@ private:
 		SDL_Event event;
 		while (runGame) {
 			SDL_PollEvent(&event);
-			uiManager->printText("Тест Вывода русского", 100, 100, {0, 255, 0}, 20);
-			uiManager->printText("English output test", 100, 140, {0, 255, 0}, 20);
 			gameField->drawBoard();
 			SDL_RenderPresent(ren);
 
