@@ -14,7 +14,7 @@ class UI_Manager {
 	SDL_Surface *window_surface{};
 	SDL_Renderer *renderer;
 	int fontSize = 16;
-	std::string fontName = "Roboto-Regular";
+	std::string fontName = "Roboto-Medium";
 public:
 	UI_Manager(SDL_Surface *pSurface, SDL_Renderer *pRenderer) {
 		if (TTF_Init() == -1) {
@@ -53,13 +53,7 @@ public:
 		SDL_Rect Message_rect; //create a rect
 		Message_rect.x = x;  //controls the rect's x coordinate
 		Message_rect.y = y; // controls the rect's y coordinte
-		TTF_SizeText(font, text.c_str(), &Message_rect.w, &Message_rect.h);
-
-		/*Message_rect.w = fontSize * text.length() * 0.5; // controls the width of the rect
-		Message_rect.h = fontSize; // controls the height of the rect*/
-
-		//Mind you that (0,0) is on the top left of the window/screen, think a rect as the text's box, that way it would be very simple to understance
-		//Now since it's a texture, you have to put RenderCopy in your game loop area, the area where the whole code executes
+		TTF_SizeUTF8(font, text.c_str(), &Message_rect.w, &Message_rect.h);
 		SDL_RenderCopy(renderer, Message, nullptr,
 		               &Message_rect); //you put the renderer's name first, the Message, the crop size(you can ignore this if you don't want to dabble with cropping), and the rect which is the size and coordinate of your texture
 
