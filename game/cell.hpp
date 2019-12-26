@@ -13,18 +13,20 @@ private:
 
 public:
 	char status = 'd'; ///< a-alive d-dead b-born
+	char deathReason = 'u'; // l= not enough neighbours; u= unset; c=to much cells nearby
 	explicit Cell(SDL_Window *game_window) {
 		block.h = 16;
 		block.w = block.h;
 		window = game_window;
-		surface=SDL_GetWindowSurface(window);
+		surface = SDL_GetWindowSurface(window);
 	}
 
 	void redraw() {
-		if(surface== nullptr){
+		if (surface == nullptr) {
 			std::string error = SDL_GetError();
 
-			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "Cell->redraw: Surface is null... what am i supposed to draw on?\n%s", error.c_str());
+			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR,
+			                "Cell->redraw: Surface is null... what am i supposed to draw on?\n%s", error.c_str());
 			throw std::runtime_error("Cell->redraw: Surface is null");
 		}
 		switch (status) {
@@ -40,15 +42,17 @@ public:
 	}
 
 	void setLocation(int x, int y) {
-		int h,w;
-		SDL_GetWindowSize(window, &w,&h);
+		int h, w;
+		SDL_GetWindowSize(window, &w, &h);
 		if (x * block.h <= w && x * block.h >= 0 &&
 		    y * block.h <= h &&
 		    y * block.h >= 0) {
 			block.x = x * block.h;
 			block.y = y * block.h;
 		} else {
-			std::string error = "Cell->SetLocationFailed new coords are out of bounds";
+			std::string error = "Cell->SetLocationFailed new coords are out of bounds X:" + std::to_string(x) + " Y:" +
+			                    std::to_string(y * block.h) + " while max is: " + std::to_string(w) + "x" +
+			                    std::to_string(h);
 			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
 			throw std::runtime_error("Cell->SetLocationFailed new coords are out of bounds");
 		}

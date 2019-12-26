@@ -17,7 +17,7 @@ private:
 	SDL_DisplayMode DM{};
 	SDL_Window *win{};
 	SDL_Renderer *ren{};
-	GameField* gameField{};
+	GameField *gameField{};
 	UI_Manager *uiManager;
 	bool runGame = false;
 public:
@@ -48,7 +48,7 @@ public:
 		}
 
 		uiManager = new UI_Manager(SDL_GetWindowSurface(win), ren); //init UI_Manager and font related stuff
-		gameField=new GameField(win);
+		gameField = new GameField(win);
 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL2 init - Good\nGame Start");
 		run(); // Starts the game
 	}
@@ -58,8 +58,12 @@ private:
 		runGame = true;
 		SDL_Event event;
 		while (runGame) {
+			cout<<gameField->cells[2][1].status<<gameField->cells[2][2].status<<gameField->cells[2][3].status<<endl;//endl<<gameField->cells[2][1].status<<gameField->cells[2][2].status<<endl;
+			cout<<gameField->cells[2][1].deathReason<<gameField->cells[2][2].deathReason<<gameField->cells[2][3].deathReason<<endl;//endl<<gameField->cells[2][1].status<<gameField->cells[2][2].status<<endl;
 			SDL_PollEvent(&event);
+			gameField->checkForNeibourghs();
 			gameField->drawBoard();
+
 			SDL_RenderPresent(ren);
 
 			/// TODO - Создать класс для отработки событий и вынести это условие туда
@@ -68,7 +72,7 @@ private:
 				SDL_LogInfo(SDL_LOG_CATEGORY_INPUT, "Got QUIT event");
 			}
 
-			SDL_Delay(5); // Decreasing cpu load
+			SDL_Delay(100); // Decreasing cpu load
 		}
 
 		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying render");

@@ -11,30 +11,56 @@
 #include <stdexcept>
 #include "cell.hpp"
 #include <vector>
+#include <random>
 
 using namespace std;
+
 class GameField {
 	SDL_Window *window;
 public:
-	std::vector<std::vector<Cell*>> cells;
+	std::vector<std::vector<Cell>> cells;
+
 	explicit GameField(SDL_Window *game_window) {
 		window = game_window;
 
-		if(window==nullptr){
+		if (window == nullptr) {
 			std::string error = SDL_GetError();
 			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "GameField->constructor: Window is null");
 			throw std::runtime_error("GameField->constructor: Window is null");
 		}
 
-		int h,w;
-		SDL_GetWindowSize(window, &w,&h);
-		for (int i = 0; i < w / 16; ++i) {
-			for (int j = 0; j < h / 16; ++j) {
-				/*Cell* tmp=new Cell(window);
-				cells[i].push_back(tmp);
-				cells[i][j]->setLocation(i,j);*/
+		int h, w;
+		SDL_GetWindowSize(window, &w, &h);
+		/*for (int i = 0; getline(in, line); i++) {
+			vector<int> row; //создаем одномерный вектор
+			for (int j = 0; j < line.size(); j++) {
+				row.push_back(line[j]); //набиваем значениями
 			}
+			matrix.push_back(row); запихиваем полученный одномерный вектор в двумерный.
+		};*/
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<> dis(1, 10000);
+
+		for (int i = 0; i <= w / 16; ++i) {
+			vector<Cell> row;
+			for (int j = 0; j <= h / 16; j++) {
+				row.emplace_back(window);
+				row.back().setLocation(i, j);
+				unsigned int num = dis(gen);
+				if (num % 2 == 0) {
+					row.back().status='u';
+				}
+				else{
+					row.back().status='a';
+				}
+			}
+			cells.push_back(row);
 		}
+		//cells[1][1].status='a';
+		cells[2][1].status='a';
+		cells[2][2].status='a';
+		cells[2][3].status='a';
 	}
 
 	void drawBoard() {
@@ -43,15 +69,57 @@ public:
 			//throw std::runtime_error("GameField->drawBoard: Cells array is NULL");
 		}
 
-		int h,w;
-		SDL_GetWindowSize(window, &w,&h);
+		int h, w;
+		SDL_GetWindowSize(window, &w, &h);
 
 		for (int i = 0; i < w / 16; ++i) {
 			for (int j = 0; j < h / 16; ++j) {
-			//	cells[i][j]->redraw();
+				cells[i][j].redraw();
 			}
 		}
 
+	}
+
+	void checkForNeibourghs() {
+		int neibourghs = 0;
+		for (int i = 0; i < cells.size(); ++i) {
+			for (int j = 0; j < cells[0].size(); ++j) {
+				if (getElement(i, j - 1)->status == 'a')neibourghs++; //checking cell on the left
+				if (getElement(i, j + 1)->status == 'a')neibourghs++; //checking cell on the right
+				if (getElement(i - 1, j)->status == 'a')neibourghs++; //checking cell on the top
+				if (getElement(i + 1, j)->status == 'a')neibourghs++; //checking cell on the bottom
+				if (getElement(i - 1, j - 1)->status == 'a')neibourghs++; //checking cell on the top left
+				if (getElement(i - 1, j + 1)->status == 'a')neibourghs++; //checking cell on the top right
+				if (getElement(i + 1, j - 1)->status == 'a')neibourghs++; //checking cell on the bottom left
+				if (getElement(i + 1, j + 1)->status == 'a')neibourghs++; //checking cell on the bottom right
+				if (neibourghs < 2 && cells[i][j].status == 'a') {
+					cells[i][j].status = 'd';
+					cells[i][j].deathReason = 'l';
+				} else if (neibourghs > 3 && cells[i][j].status == 'a') {
+					cells[i][j].status = 'd';
+					cells[i][j].deathReason = 'c';
+				} else if (cells[i][j].status == 'd' && neibourghs == 3) {
+					cells[i][j].status = 'a';
+					cells[i][j].status = 'u';
+				}
+				neibourghs=0;
+			}
+
+		}
+	}
+
+	Cell *getElement(int column, int row) {
+		//cout<<"Got "<<column<<" "<<row<<endl;
+		if (column < 0)
+			column = cells.size() - 1;
+		if (column == cells.size())
+			column = 0;
+		if (row < 0)
+			row = cells[column].size() - 1;
+		if (row == cells[column].size())
+			row = 0;
+		//cout<<"Interpreted as "<<column<<" "<<row<<endl;
+		return &cells[column][row];
 	}
 };
 
