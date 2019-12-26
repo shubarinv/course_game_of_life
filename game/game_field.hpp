@@ -31,13 +31,6 @@ public:
 
 		int h, w;
 		SDL_GetWindowSize(window, &w, &h);
-		/*for (int i = 0; getline(in, line); i++) {
-			vector<int> row; //создаем одномерный вектор
-			for (int j = 0; j < line.size(); j++) {
-				row.push_back(line[j]); //набиваем значениями
-			}
-			matrix.push_back(row); запихиваем полученный одномерный вектор в двумерный.
-		};*/
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_int_distribution<> dis(1, 10000);
@@ -77,8 +70,10 @@ public:
 
 	void checkForNeibourghs() {
 		int neibourghs = 0;
+		int aliveCells=0;
 		for (int i = 0; i < cells.size(); ++i) {
 			for (int j = 0; j < cells[0].size(); ++j) {
+				if(getElement(i, j)->state == 'a') aliveCells++;
 				if (getElement(i, j - 1)->state == 'a')neibourghs++; //checking cell on the left
 				if (getElement(i, j + 1)->state == 'a')neibourghs++; //checking cell on the right
 				if (getElement(i - 1, j)->state == 'a')neibourghs++; //checking cell on the top
@@ -105,6 +100,7 @@ public:
 				cell[j].applyNewState();
 			}
 		}
+		cout<<"Alive Cells: "<<aliveCells<<endl;
 
 	}
 

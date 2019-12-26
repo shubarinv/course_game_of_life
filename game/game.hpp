@@ -58,8 +58,6 @@ private:
 		runGame = true;
 		SDL_Event event;
 		while (runGame) {
-			cout << gameField->cells[2][1].state << gameField->cells[2][2].state << gameField->cells[2][3].state << endl;//endl<<gameField->cells[2][1].state<<gameField->cells[2][2].state<<endl;
-			cout<<gameField->cells[2][1].deathReason<<gameField->cells[2][2].deathReason<<gameField->cells[2][3].deathReason<<endl;//endl<<gameField->cells[2][1].state<<gameField->cells[2][2].state<<endl;
 			SDL_PollEvent(&event);
 			gameField->checkForNeibourghs();
 			gameField->drawBoard();
