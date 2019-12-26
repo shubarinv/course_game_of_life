@@ -16,7 +16,14 @@
 using namespace std;
 
 class GameField {
+private:
 	SDL_Window *window;
+	int aliveCells = 0;
+public:
+	[[nodiscard]] int getAliveCells() const {
+		return aliveCells;
+	}
+
 public:
 	std::vector<std::vector<Cell>> cells;
 
@@ -70,10 +77,10 @@ public:
 
 	void checkForNeibourghs() {
 		int neibourghs = 0;
-		int aliveCells=0;
+		aliveCells = 0;
 		for (int i = 0; i < cells.size(); ++i) {
 			for (int j = 0; j < cells[0].size(); ++j) {
-				if(getElement(i, j)->state == 'a') aliveCells++;
+				if (getElement(i, j)->state == 'a') aliveCells++;
 				if (getElement(i, j - 1)->state == 'a')neibourghs++; //checking cell on the left
 				if (getElement(i, j + 1)->state == 'a')neibourghs++; //checking cell on the right
 				if (getElement(i - 1, j)->state == 'a')neibourghs++; //checking cell on the top
@@ -89,19 +96,17 @@ public:
 					cells[i][j].next_state = 'd';
 					cells[i][j].deathReason = 'c';
 				} else if (neibourghs == 3) {
-					cells[i][j].next_state = 'a';
+					cells[i][j].next_state = 'b';
 					cells[i][j].deathReason = 'u';
 				}
 				neibourghs = 0;
 			}
 		}
-		for (auto & cell : cells) {
+		for (auto &cell : cells) {
 			for (int j = 0; j < cells[0].size(); ++j) {
 				cell[j].applyNewState();
 			}
 		}
-		cout<<"Alive Cells: "<<aliveCells<<endl;
-
 	}
 
 	Cell *getElement(int column, int row) {

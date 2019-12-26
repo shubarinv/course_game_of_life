@@ -37,7 +37,10 @@ public:
 			case 'a':
 				SDL_FillRect(surface, &block, 0x6FAB63);
 				break;
-				//case 'b':SDL_FillRect(surface, &block, 0x8D3516);break;
+			case 'b':
+				SDL_FillRect(surface, &block, 0x7DCB6E);
+				state='a';
+				break;
 
 		}
 	}
