@@ -49,18 +49,13 @@ public:
 				row.back().setLocation(i, j);
 				unsigned int num = dis(gen);
 				if (num % 2 == 0) {
-					row.back().status='u';
-				}
-				else{
-					row.back().status='a';
+					row.back().state = 'u';
+				} else {
+					row.back().state = 'a';
 				}
 			}
 			cells.push_back(row);
 		}
-		//cells[1][1].status='a';
-		cells[2][1].status='a';
-		cells[2][2].status='a';
-		cells[2][3].status='a';
 	}
 
 	void drawBoard() {
@@ -84,28 +79,33 @@ public:
 		int neibourghs = 0;
 		for (int i = 0; i < cells.size(); ++i) {
 			for (int j = 0; j < cells[0].size(); ++j) {
-				if (getElement(i, j - 1)->status == 'a')neibourghs++; //checking cell on the left
-				if (getElement(i, j + 1)->status == 'a')neibourghs++; //checking cell on the right
-				if (getElement(i - 1, j)->status == 'a')neibourghs++; //checking cell on the top
-				if (getElement(i + 1, j)->status == 'a')neibourghs++; //checking cell on the bottom
-				if (getElement(i - 1, j - 1)->status == 'a')neibourghs++; //checking cell on the top left
-				if (getElement(i - 1, j + 1)->status == 'a')neibourghs++; //checking cell on the top right
-				if (getElement(i + 1, j - 1)->status == 'a')neibourghs++; //checking cell on the bottom left
-				if (getElement(i + 1, j + 1)->status == 'a')neibourghs++; //checking cell on the bottom right
-				if (neibourghs < 2 && cells[i][j].status == 'a') {
-					cells[i][j].status = 'd';
+				if (getElement(i, j - 1)->state == 'a')neibourghs++; //checking cell on the left
+				if (getElement(i, j + 1)->state == 'a')neibourghs++; //checking cell on the right
+				if (getElement(i - 1, j)->state == 'a')neibourghs++; //checking cell on the top
+				if (getElement(i + 1, j)->state == 'a')neibourghs++; //checking cell on the bottom
+				if (getElement(i - 1, j - 1)->state == 'a')neibourghs++; //checking cell on the top left
+				if (getElement(i - 1, j + 1)->state == 'a')neibourghs++; //checking cell on the top right
+				if (getElement(i + 1, j - 1)->state == 'a')neibourghs++; //checking cell on the bottom left
+				if (getElement(i + 1, j + 1)->state == 'a')neibourghs++; //checking cell on the bottom right
+				if (neibourghs < 2) {
+					cells[i][j].next_state = 'd';
 					cells[i][j].deathReason = 'l';
-				} else if (neibourghs > 3 && cells[i][j].status == 'a') {
-					cells[i][j].status = 'd';
+				} else if (neibourghs > 3) {
+					cells[i][j].next_state = 'd';
 					cells[i][j].deathReason = 'c';
-				} else if (cells[i][j].status == 'd' && neibourghs == 3) {
-					cells[i][j].status = 'a';
-					cells[i][j].status = 'u';
+				} else if (neibourghs == 3) {
+					cells[i][j].next_state = 'a';
+					cells[i][j].deathReason = 'u';
 				}
-				neibourghs=0;
+				neibourghs = 0;
 			}
-
 		}
+		for (auto & cell : cells) {
+			for (int j = 0; j < cells[0].size(); ++j) {
+				cell[j].applyNewState();
+			}
+		}
+
 	}
 
 	Cell *getElement(int column, int row) {
