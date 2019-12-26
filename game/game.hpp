@@ -74,7 +74,7 @@ private:
 				SDL_LogInfo(SDL_LOG_CATEGORY_INPUT, "Got QUIT event");
 			}
 			prevCells=gameField->getAliveCells();
-			SDL_Delay(100); // Decreasing cpu load
+			SDL_Delay(90); // Decreasing cpu load
 		}
 
 		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying render");

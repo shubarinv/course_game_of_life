@@ -75,6 +75,7 @@ public:
 
 	}
 
+	/// @brief checking compliance with rules
 	void checkForNeibourghs() {
 		int neibourghs = 0;
 		aliveCells = 0;
@@ -110,7 +111,6 @@ public:
 	}
 
 	Cell *getElement(int column, int row) {
-		//cout<<"Got "<<column<<" "<<row<<endl;
 		if (column < 0)
 			column = cells.size() - 1;
 		if (column == cells.size())
@@ -119,7 +119,6 @@ public:
 			row = cells[column].size() - 1;
 		if (row == cells[column].size())
 			row = 0;
-		//cout<<"Interpreted as "<<column<<" "<<row<<endl;
 		return &cells[column][row];
 	}
 };
