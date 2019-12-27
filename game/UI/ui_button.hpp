@@ -7,6 +7,7 @@
 
 
 #include <SDL_rect.h>
+#include <string>
 
 class uiButton {
 private:
@@ -14,18 +15,19 @@ private:
 	SDL_Color defaultColor;
 	SDL_Color hoverColor;
 	SDL_Color disabledColor;
+	std::string text = "UNSET";
 	bool enabled{true};
 	bool hover{false};
 public:
-	bool isEnabled() const {
+	[[nodiscard]] bool isEnabled() const {
 		return enabled;
 	}
 
-	void setEnabled(bool enabled) {
-		uiButton::enabled = enabled;
+	void setEnabled(bool _enabled) {
+		uiButton::enabled = _enabled;
 	}
 
-	bool isHover() const {
+	[[nodiscard]] bool isHover() const {
 		return hover;
 	}
 
@@ -33,7 +35,19 @@ public:
 		return !enabled;
 	}
 
-	void draw();
+	void calculateTextPosition() {
+		/// Todo: somehow figure out how to position text at the center of the button
+	}
+
+	void draw() {
+		if (enabled) {
+			if (hover) {///TODO paint button with hover color
+			} else {///TODO paint button with default color
+			}
+		} else {
+			///TODO paint button with disabled color
+		}
+	}
 
 
 };
