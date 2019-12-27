@@ -18,11 +18,13 @@ public:
 		win = window;
 	}
 
+
 protected:
 	UI_Manager *uiManager{};
 	SDL_Window *win{};
-
-	void createButton(int x, int y, int width, int height, const std::string &text, int btnColor, SDL_Color textColor) {
+	/// TODO: Remove this function, add button class.
+	[[deprecated]]void createButton(int x, int y, int width, int height, const std::string &text, int btnColor,
+	                                SDL_Color textColor) {///< @deprecated due to complexity @bug incorrect alignment is cyrillic symbols are used
 		SDL_Rect button;
 		button.x = x;
 		button.y = y;
@@ -31,7 +33,7 @@ protected:
 		SDL_FillRect(SDL_GetWindowSurface(win), &button, btnColor);
 
 		uiManager->printText(text, (x + width / 2) - uiManager->getFontSize() / 2 * (text.length() / 2.0),
-		                     (y + height / 2) - uiManager->getFontSize() / 2 - 3,
+		                     (y + height / 2) - uiManager->getFontSize() / 2,
 		                     textColor, 20);
 	}
 };

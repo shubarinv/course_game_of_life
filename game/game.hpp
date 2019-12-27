@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include "UI/ui_manager.hpp"
 #include "game_field.hpp"
+#include "UI/ui_main_menu.hpp"
 
 class Game {
 private:
@@ -19,7 +20,7 @@ private:
 	SDL_Renderer *ren{};
 	GameField *gameField{};
 	UI_Manager *uiManager;
-	char state = 'r';///< r-playing game| p-pause| m-main_Menu| e-Editing field
+	char state = 'm';///< r-playing game| p-pause| m-main_Menu| e-Editing field
 	int prevCells = 0;
 	bool runGame = false;
 public:
@@ -49,7 +50,7 @@ public:
 			throw std::runtime_error("Unable to create render (SDL2)");
 		}
 
-		uiManager = new UI_Manager(SDL_GetWindowSurface(win), ren); //init UI_Manager and font related stuff
+		uiManager = new UI_Manager(SDL_GetWindowSurface(win), ren,win); //init UI_Manager and font related stuff
 		gameField = new GameField(win);
 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL2 init - Good\nGame Start");
 		run(); // Starts the game
@@ -79,6 +80,8 @@ private:
 				SDL_Delay(90); // Decreasing cpu load
 			}
 			if (state == 'm') {
+				UI_MainMenu uiMainMenu(uiManager,win);
+				uiMainMenu.show();
 
 			}
 			if (state == 'p') {
@@ -87,6 +90,7 @@ private:
 			if (state == 'e') {
 
 			}
+			SDL_RenderPresent(ren);
 		}
 
 		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying render");
