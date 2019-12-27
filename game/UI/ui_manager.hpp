@@ -10,12 +10,34 @@
 #include <iostream>
 
 class UI_Manager {
+private:
 	TTF_Font *font{};
 	SDL_Renderer *renderer;
 	int fontSize = {};
-	std::string fontName = "Roboto-Medium";
+	int windowResolutionX{0};
+	int windowResolutionY{0};
+	SDL_Window *window{};
 public:
-	UI_Manager(SDL_Surface *pSurface, SDL_Renderer *pRenderer) {
+	std::string fontName = "Roboto-Medium";
+
+	[[nodiscard]] int getWindowResolutionX() const {
+		return windowResolutionX;
+	}
+
+	[[nodiscard]] int getWindowResolutionY() const {
+		return windowResolutionY;
+	}
+
+	[[nodiscard]] SDL_Renderer *getRenderer() const {
+		return renderer;
+	}
+
+	[[nodiscard]] int getFontSize() const {
+		return fontSize;
+	}
+
+public:
+	UI_Manager(SDL_Surface *pSurface, SDL_Renderer *pRenderer, SDL_Window *win) {
 		if (TTF_Init() == -1) {
 			std::string error = TTF_GetError();
 			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
@@ -29,6 +51,8 @@ public:
 			throw std::runtime_error("UI_Manager->TTF_OpenFont: Attempt to open font was unsuccessful");
 		}
 		renderer = pRenderer;
+		window=win;
+		SDL_GetWindowSize(win, &windowResolutionX, &windowResolutionY);
 	}
 
 	void changeFontSize(int size) {

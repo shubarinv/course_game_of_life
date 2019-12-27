@@ -19,7 +19,8 @@ private:
 	SDL_Renderer *ren{};
 	GameField *gameField{};
 	UI_Manager *uiManager;
-	int prevCells=0;
+	char state = 'r';///< r-playing game| p-pause| m-main_Menu| e-Editing field
+	int prevCells = 0;
 	bool runGame = false;
 public:
 	Game() {
@@ -60,21 +61,32 @@ private:
 		SDL_Event event;
 		while (runGame) {
 			SDL_PollEvent(&event);
-			gameField->checkForNeibourghs();
-			gameField->drawBoard();
-			if(prevCells==gameField->getAliveCells()){
-				cout<<"Kinda STABLE CONFIG"<<endl;
-			}
-			uiManager->printText("Cells: "+to_string(gameField->getAliveCells()),10,20,{247,217,63},25);
-			SDL_RenderPresent(ren);
+			if (state == 'r') {
+				gameField->checkForNeibourghs();
+				gameField->drawBoard();
+				if (prevCells == gameField->getAliveCells()) {
+					cout << "Kinda STABLE CONFIG" << endl;
+				}
+				uiManager->printText("Cells: " + to_string(gameField->getAliveCells()), 10, 20, {247, 217, 63}, 25);
+				SDL_RenderPresent(ren);
 
-			/// TODO - Создать класс для отработки событий и вынести это условие туда
-			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
-				runGame = false;
-				SDL_LogInfo(SDL_LOG_CATEGORY_INPUT, "Got QUIT event");
+				/// TODO - Создать класс для отработки событий и вынести это условие туда
+				if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
+					runGame = false;
+					SDL_LogInfo(SDL_LOG_CATEGORY_INPUT, "Got QUIT event");
+				}
+				prevCells = gameField->getAliveCells();
+				SDL_Delay(90); // Decreasing cpu load
 			}
-			prevCells=gameField->getAliveCells();
-			SDL_Delay(90); // Decreasing cpu load
+			if (state == 'm') {
+
+			}
+			if (state == 'p') {
+
+			}
+			if (state == 'e') {
+
+			}
 		}
 
 		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying render");
