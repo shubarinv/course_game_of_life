@@ -20,6 +20,10 @@ private:
 public:
 	std::string fontName = "Roboto-Medium";
 
+    [[nodiscard]] SDL_Window *getWindow() const {
+        return window;
+    }
+
 	[[nodiscard]] int getWindowResolutionX() const {
 		return windowResolutionX;
 	}
@@ -80,6 +84,9 @@ public:
 		               &Message_rect); //you put the renderer's name first, the Message, the crop size(you can ignore this if you don't want to dabble with cropping), and the rect which is the size and coordinate of your texture
 
 	}
+	static int rgbToHex(SDL_Color rgb){///< @brief used to convert SDL_Color to hex
+        return rgb.r*rgb.g*rgb.b;
+    }
 };
 
 
