@@ -18,20 +18,27 @@ private:
     SDL_Color disabledColor{82, 82, 82};
     UI_Manager *uiManager{};
     std::string text = "UNSET";
+    int textPosX;
+    int textPosY;
     bool enabled{true};
     bool hover{false};
+    int fontSize{20};
 public:
-    uiButton(std::string string, UI_Manager *_uiManager, int x, int y, int width, int height) {
+    uiButton(const std::string &string, UI_Manager *_uiManager, int x, int y, int width, int height,
+             int _fontSize = 20) {
         if (_uiManager == nullptr) {
             std::string error = "UIButton->Constructor->uiManager is null";
             SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
             throw std::runtime_error("Unable to button uiManager is null");
         }
         uiManager = _uiManager;
-        body.x=x;
-        body.y=y;
-        body.w=width;
-        body.h=height;
+        body.x = x;
+        body.y = y;
+        body.w = width;
+        body.h = height;
+        fontSize = _fontSize;
+        text = string;
+        calculateTextPosition();
     }
 
     [[nodiscard]] bool isEnabled() const {
@@ -51,17 +58,23 @@ public:
     }
 
     void calculateTextPosition() {
-        /// Todo: somehow figure out how to position text at the center of the button
+        int textWidth = uiManager->getTextSize(text, fontSize).a;
+        int textHeight = uiManager->getTextSize(text, fontSize).b;
+        textPosX = (body.x + body.w / 2) - textWidth / 2;
+        textPosY = (body.y + body.h / 2) - textHeight / 2;
     }
 
     void draw() {
         if (enabled) {
-            if (hover) {SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body,UI_Manager::rgbToHex(hoverColor));
-            } else {SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body,UI_Manager::rgbToHex(defaultColor));
+            if (hover) {
+                SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, UI_Manager::rgbToHex(hoverColor));
+            } else {
+                SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, UI_Manager::rgbToHex(defaultColor));
             }
         } else {
-            SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body,UI_Manager::rgbToHex(disabledColor));
+            SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, UI_Manager::rgbToHex(disabledColor));
         }
+        uiManager->printText(text, textPosX, textPosY, {255, 255, 255}, fontSize);
     }
 
     void setDefaultColor(const SDL_Color &_defaultColor) {

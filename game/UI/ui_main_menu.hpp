@@ -7,30 +7,23 @@
 
 
 #include "ui_base.hpp"
+#include "ui_button.hpp"
 
 class UI_MainMenu : private virtual UI_Base {
 public:
-	void show() {
-		createButton(uiManager->getWindowResolutionX()/2-100,100,200,50,"START",0x00f0ff,{255,0,225});
-/*
-		drawText((int) (0.5 * screenManager->screenUnit * 3 - 5),
-		         (int) (3 * screenManager->screenUnit +
-		                screenManager->screenUnit * 0.4),
-		         "leaderboard", 0xffffff);
-		drawText(
-				(int) (0.5 * screenManager->screenUnit * 3 - 5),
-				(int) (3 * screenManager->screenUnit + screenManager->screenUnit * 0.8),
-				"rules", 0xffffff);
-
-		drawText((int) (0.5 * screenManager->screenUnit),
-		         (int) (3 * screenManager->screenUnit + screenManager->screenUnit * 1.2),
-		         "quit", 0xffffff);
-*/
-	}
+    void show() {
+        play_btn->draw();
+        test_btn->draw();
+    }
 
 public:
-	UI_MainMenu(UI_Manager *ui_Manager, SDL_Window *window) : UI_Base(ui_Manager, window) {
-	}
+    uiButton *play_btn;
+    uiButton *test_btn;
+
+    UI_MainMenu(UI_Manager *ui_Manager, SDL_Window *window) : UI_Base(ui_Manager, window) {
+        play_btn = new uiButton("Start", uiManager, uiManager->getWindowResolutionX() / 2 - 100, 150, 200, 50, 20);
+        test_btn = new uiButton("Старт", uiManager, uiManager->getWindowResolutionX() / 2 - 100, 250, 200, 50, 20);
+    }
 };
 
 

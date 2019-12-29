@@ -60,6 +60,7 @@ private:
 	int run() {
 		runGame = true;
 		SDL_Event event;
+        UI_MainMenu uiMainMenu(uiManager, win);
 		while (runGame) {
 			SDL_PollEvent(&event);
 			if (state == 'r') {
@@ -80,7 +81,6 @@ private:
 				SDL_Delay(90); // Decreasing cpu load
 			}
 			if (state == 'm') {
-				UI_MainMenu uiMainMenu(uiManager,win);
 				uiMainMenu.show();
 
 			}

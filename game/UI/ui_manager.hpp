@@ -11,32 +11,36 @@
 
 class UI_Manager {
 private:
-	TTF_Font *font{};
-	SDL_Renderer *renderer;
-	int fontSize = {};
-	int windowResolutionX{0};
-	int windowResolutionY{0};
-	SDL_Window *window{};
+    TTF_Font *font{};
+    SDL_Renderer *renderer;
+    int fontSize = {};
+    int windowResolutionX{0};
+    int windowResolutionY{0};
+    SDL_Window *window{};
+    struct twoInt {
+        int a;
+        int b;
+    };
 public:
-	std::string fontName = "Roboto-Medium";
+    std::string fontName = "Roboto-Medium";
 
     [[nodiscard]] SDL_Window *getWindow() const {
         return window;
     }
 
-	[[nodiscard]] int getWindowResolutionX() const {
-		return windowResolutionX;
-	}
+    [[nodiscard]] int getWindowResolutionX() const {
+        return windowResolutionX;
+    }
 
-	[[nodiscard]] int getWindowResolutionY() const {
-		return windowResolutionY;
-	}
+    [[nodiscard]] int getWindowResolutionY() const {
+        return windowResolutionY;
+    }
 
-	[[nodiscard]] SDL_Renderer *getRenderer() const {
-		return renderer;
-	}
+    [[nodiscard]] SDL_Renderer *getRenderer() const {
+        return renderer;
+    }
 
-	[[nodiscard]] int getFontSize() const {
+    [[nodiscard]] int getFontSize() const {
 		return fontSize;
 	}
 
@@ -71,21 +75,29 @@ public:
 
 	void printText(const std::string &text, int x, int y, SDL_Color color = {0, 0, 0},
 	               int font_size = 16) {
-		changeFontSize(font_size);
-		SDL_Surface *surfaceMessage = TTF_RenderUTF8_Solid(font, text.c_str(),
-		                                                   color); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
-		SDL_Texture *Message = SDL_CreateTextureFromSurface(renderer,
-		                                                    surfaceMessage); //now you can convert it into a texture
-		SDL_Rect Message_rect; //create a rect
-		Message_rect.x = x;  //controls the rect's x coordinate
-		Message_rect.y = y; // controls the rect's y coordinte
-		TTF_SizeUTF8(font, text.c_str(), &Message_rect.w, &Message_rect.h);
-		SDL_RenderCopy(renderer, Message, nullptr,
-		               &Message_rect); //you put the renderer's name first, the Message, the crop size(you can ignore this if you don't want to dabble with cropping), and the rect which is the size and coordinate of your texture
+        changeFontSize(font_size);
+        SDL_Surface *surfaceMessage = TTF_RenderUTF8_Solid(font, text.c_str(),
+                                                           color); // as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
+        SDL_Texture *Message = SDL_CreateTextureFromSurface(renderer,
+                                                            surfaceMessage); //now you can convert it into a texture
+        SDL_Rect Message_rect; //create a rect
+        Message_rect.x = x;  //controls the rect's x coordinate
+        Message_rect.y = y; // controls the rect's y coordinte
+        TTF_SizeUTF8(font, text.c_str(), &Message_rect.w, &Message_rect.h);
+        SDL_RenderCopy(renderer, Message, nullptr,
+                       &Message_rect); //you put the renderer's name first, the Message, the crop size(you can ignore this if you don't want to dabble with cropping), and the rect which is the size and coordinate of your texture
 
-	}
-	static int rgbToHex(SDL_Color rgb){///< @brief used to convert SDL_Color to hex
-        return rgb.r*rgb.g*rgb.b;
+    }
+
+    static int rgbToHex(SDL_Color rgb) {///< @brief used to convert SDL_Color to hex
+        return rgb.r * rgb.g * rgb.b;
+    }
+
+    twoInt getTextSize(const std::string &_string, int _fontSize) {
+        changeFontSize(_fontSize);
+        twoInt widthAndHeight{};
+        TTF_SizeUTF8(font, _string.c_str(), &widthAndHeight.a, &widthAndHeight.b);
+        return widthAndHeight;
     }
 };
 
