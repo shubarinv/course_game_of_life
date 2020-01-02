@@ -53,8 +53,8 @@ public:
         return hover;
     }
 
-    bool collisionCheck() {
-        return !enabled;
+    bool collisionCheck(int x, int y) {
+        return x >= body.x && x <= body.x + body.w && y >= body.y && y <= body.y + body.h;
     }
 
     void calculateTextPosition() {
@@ -64,7 +64,8 @@ public:
         textPosY = (body.y + body.h / 2) - textHeight / 2;
     }
 
-    void draw() {
+    void draw(int x, int y) {
+        hover = collisionCheck(x, y);
         if (enabled) {
             if (hover) {
                 SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, UI_Manager::rgbToHex(hoverColor));

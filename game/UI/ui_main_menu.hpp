@@ -12,8 +12,10 @@
 class UI_MainMenu : private virtual UI_Base {
 public:
     void show() {
-        play_btn->draw();
-        test_btn->draw();
+        play_btn->draw(uiManager->getInputManager()->getMouseCoords().x,
+                       uiManager->getInputManager()->getMouseCoords().y);
+        test_btn->draw(uiManager->getInputManager()->getMouseCoords().x,
+                       uiManager->getInputManager()->getMouseCoords().y);
     }
 
 public:

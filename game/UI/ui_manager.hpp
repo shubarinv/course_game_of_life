@@ -8,6 +8,7 @@
 
 #include <SDL_ttf.h>
 #include <iostream>
+#include "../input_manager.hpp"
 
 class UI_Manager {
 private:
@@ -16,6 +17,7 @@ private:
     int fontSize = {};
     int windowResolutionX{0};
     int windowResolutionY{0};
+    InputManager *inputManager;
     SDL_Window *window{};
     struct twoInt {
         int a;
@@ -41,27 +43,32 @@ public:
     }
 
     [[nodiscard]] int getFontSize() const {
-		return fontSize;
-	}
+        return fontSize;
+    }
+
+    [[nodiscard]] InputManager *getInputManager() const {
+        return inputManager;
+    }
 
 public:
-	UI_Manager(SDL_Surface *pSurface, SDL_Renderer *pRenderer, SDL_Window *win) {
-		if (TTF_Init() == -1) {
-			std::string error = TTF_GetError();
-			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-			throw std::runtime_error("UI_Manager->TTF_OpenFont: Attempt to open font was unsuccessful");
-		}
+    UI_Manager(SDL_Surface *pSurface, SDL_Renderer *pRenderer, SDL_Window *win, InputManager *pManager) {
+        if (TTF_Init() == -1) {
+            std::string error = TTF_GetError();
+            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
+            throw std::runtime_error("UI_Manager->TTF_OpenFont: Attempt to open font was unsuccessful");
+        }
 
-		font = TTF_OpenFont((fontName + ".ttf").c_str(), 16);
-		if (!font) {
-			std::string error = TTF_GetError();
-			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-			throw std::runtime_error("UI_Manager->TTF_OpenFont: Attempt to open font was unsuccessful");
-		}
-		renderer = pRenderer;
-		window=win;
-		SDL_GetWindowSize(win, &windowResolutionX, &windowResolutionY);
-	}
+        font = TTF_OpenFont((fontName + ".ttf").c_str(), 16);
+        if (!font) {
+            std::string error = TTF_GetError();
+            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
+            throw std::runtime_error("UI_Manager->TTF_OpenFont: Attempt to open font was unsuccessful");
+        }
+        renderer = pRenderer;
+        window = win;
+        inputManager = pManager;
+        SDL_GetWindowSize(win, &windowResolutionX, &windowResolutionY);
+    }
 
 	void changeFontSize(int size) {
 		font = TTF_OpenFont((fontName + ".ttf").c_str(), size);
