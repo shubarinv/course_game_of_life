@@ -31,16 +31,16 @@ public:
             std::string error = SDL_GetError();
             SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
             throw std::runtime_error("Unable to init SDL2");
-		}
-		SDL_GetCurrentDisplayMode(0, &DM);
-		auto Width = DM.w;
-		auto Height = DM.h;
-		win = SDL_CreateWindow("The Game Of Life", 0, 0, 1280, 720, SDL_WINDOW_SHOWN);
+        }
+        SDL_GetCurrentDisplayMode(0, &DM);
+        auto Width = DM.w;
+        auto Height = DM.h;
+        win = SDL_CreateWindow("The Game Of Life", 0, 0, 1280, 720, SDL_WINDOW_SHOWN);
 
-		if (win == nullptr) {
-			std::string error = SDL_GetError();
-			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-			throw std::runtime_error("Unable to create window (SDL2)");
+        if (win == nullptr) {
+            std::string error = SDL_GetError();
+            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
+            throw std::runtime_error("Unable to create window (SDL2)");
         }
 
         ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_SOFTWARE);
@@ -62,8 +62,8 @@ public:
     }
 
 private:
-	int run() {
-        UI_MainMenu uiMainMenu(uiManager, win);
+    int run() {
+        UI_MainMenu uiMainMenu(uiManager, win, "ru");
         while (!inputManager->quitEventCheck()) {
             inputManager->updateEvents();
             if (state == 'r') {
@@ -76,29 +76,29 @@ private:
                 SDL_RenderPresent(ren);
                 prevCells = gameField->getAliveCells();
                 SDL_Delay(90); // Decreasing cpu load
-			}
-			if (state == 'm') {
+            }
+            if (state == 'm') {
                 uiMainMenu.show();
                 SDL_Delay(10);
 
             }
-			if (state == 'p') {
+            if (state == 'p') {
 
-			}
-			if (state == 'e') {
+            }
+            if (state == 'e') {
 
-			}
-			SDL_RenderPresent(ren);
-		}
+            }
+            SDL_RenderPresent(ren);
+        }
 
-		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying render");
-		SDL_DestroyRenderer(ren);
-		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Render Destroyed\nDestroying window");
-		SDL_DestroyWindow(win);
-		SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroyed window");
-		free(uiManager);
-		return 0;
-	}
+        SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying render");
+        SDL_DestroyRenderer(ren);
+        SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Render Destroyed\nDestroying window");
+        SDL_DestroyWindow(win);
+        SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroyed window");
+        free(uiManager);
+        return 0;
+    }
 };
 
 

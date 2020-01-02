@@ -6,6 +6,8 @@
 #define PROGONHLANG_UI_MAIN_MENU_HPP
 
 
+#include <utility>
+
 #include "ui_base.hpp"
 #include "ui_button.hpp"
 
@@ -14,17 +16,27 @@ public:
     void show() {
         play_btn->draw(uiManager->getInputManager()->getMouseCoords().x,
                        uiManager->getInputManager()->getMouseCoords().y);
-        test_btn->draw(uiManager->getInputManager()->getMouseCoords().x,
+        quit_btn->draw(uiManager->getInputManager()->getMouseCoords().x,
                        uiManager->getInputManager()->getMouseCoords().y);
     }
 
-public:
     uiButton *play_btn;
-    uiButton *test_btn;
+    uiButton *quit_btn;
 
-    UI_MainMenu(UI_Manager *ui_Manager, SDL_Window *window) : UI_Base(ui_Manager, window) {
-        play_btn = new uiButton("Start", uiManager, uiManager->getWindowResolutionX() / 2 - 100, 150, 200, 50, 20);
-        test_btn = new uiButton("Старт", uiManager, uiManager->getWindowResolutionX() / 2 - 100, 250, 200, 50, 20);
+    UI_MainMenu(UI_Manager *ui_Manager, SDL_Window *window, std::string _locale) : UI_Base(ui_Manager, window,
+                                                                                           std::move(_locale)) {
+        if (locale == "en") {
+            play_btn = new uiButton(menuStrings["Start_En"], uiManager, uiManager->getWindowResolutionX() / 2 - 100,
+                                    150, 200, 50, 20);
+            quit_btn = new uiButton(menuStrings["Quit_En"], uiManager, uiManager->getWindowResolutionX() / 2 - 100, 250,
+                                    200, 50, 20);
+        } else {
+            play_btn = new uiButton(menuStrings["Start_Ru"], uiManager, uiManager->getWindowResolutionX() / 2 - 100,
+                                    150, 200, 50, 20);
+            quit_btn = new uiButton(menuStrings["Quit_Ru"], uiManager, uiManager->getWindowResolutionX() / 2 - 100, 250,
+                                    200, 50, 20);
+        }
+
     }
 };
 

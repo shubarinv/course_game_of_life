@@ -7,35 +7,35 @@
 
 
 #include <string>
+#include <map>
+#include <utility>
 #include <SDL_rect.h>
 #include <SDL_surface.h>
 #include "ui_manager.hpp"
 
 class UI_Base {
 public:
-	UI_Base(UI_Manager *ui_Manager, SDL_Window *window) {
-		uiManager = ui_Manager;
-		win = window;
-	}
+    UI_Base(UI_Manager *ui_Manager, SDL_Window *window, std::string _locale = "en") {
+        uiManager = ui_Manager;
+        win = window;
+
+        menuStrings["Start_En"] = "Start";
+        menuStrings["Start_Ru"] = "Начать";
+
+        menuStrings["Quit_En"] = "Quit";
+        menuStrings["Quit_Ru"] = "Выход";
+
+        menuStrings["Settings_En"] = "Settings";
+        menuStrings["Settings_Ru"] = "Настройки";
+        locale = std::move(_locale);
+    }
 
 
 protected:
-	UI_Manager *uiManager{};
-	SDL_Window *win{};
-	/// TODO: Remove this function, add button class.
-	[[deprecated]]void createButton(int x, int y, int width, int height, const std::string &text, int btnColor,
-	                                SDL_Color textColor) {///< @deprecated due to complexity @bug incorrect alignment is cyrillic symbols are used
-		SDL_Rect button;
-		button.x = x;
-		button.y = y;
-		button.w = width;
-		button.h = height;
-		SDL_FillRect(SDL_GetWindowSurface(win), &button, btnColor);
-
-		uiManager->printText(text, (x + width / 2) - uiManager->getFontSize() / 2 * (text.length() / 2.0),
-		                     (y + height / 2) - uiManager->getFontSize() / 2,
-		                     textColor, 20);
-	}
+    std::string locale{};
+    UI_Manager *uiManager{};
+    SDL_Window *win{};
+    map <string, string> menuStrings;
 };
 
 
