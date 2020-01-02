@@ -20,6 +20,13 @@ public:
                        uiManager->getInputManager()->getMouseCoords().y);
     }
 
+    char act() {
+        if (play_btn->isHover() && uiManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) { return 'r'; }
+        else if (quit_btn->isHover() &&
+                 uiManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) { return 'q'; }
+        else return 'm';
+    }
+
     uiButton *play_btn;
     uiButton *quit_btn;
 

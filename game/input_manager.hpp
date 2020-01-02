@@ -15,13 +15,21 @@ class InputManager {
     };
 private:
     SDL_Event event;
+    Uint8 mouseState{};
+public:
+    Uint8 getMouseState() const;
+
+public:
+    const SDL_Event &getEvent() const;
+
+private:
     mouseCoords mouseCoords;
 
 
 public:
     void updateEvents() {
         SDL_PollEvent(&event);
-        SDL_GetMouseState(&mouseCoords.x, &mouseCoords.y);
+        mouseState = SDL_GetMouseState(&mouseCoords.x, &mouseCoords.y);
     }
 
     bool quitEventCheck() {
@@ -36,6 +44,14 @@ public:
         return mouseCoords;
     }
 };
+
+const SDL_Event &InputManager::getEvent() const {
+    return event;
+}
+
+Uint8 InputManager::getMouseState() const {
+    return mouseState;
+}
 
 
 #endif //PROGONHLANG_INPUT_MANAGER_HPP

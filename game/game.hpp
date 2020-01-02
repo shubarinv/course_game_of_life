@@ -79,6 +79,7 @@ private:
             }
             if (state == 'm') {
                 uiMainMenu.show();
+                state = uiMainMenu.act();
                 SDL_Delay(10);
 
             }
@@ -88,6 +89,7 @@ private:
             if (state == 'e') {
 
             }
+            if (state == 'q') break;
             SDL_RenderPresent(ren);
         }
 
