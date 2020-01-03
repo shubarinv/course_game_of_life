@@ -45,6 +45,11 @@ public:
         }
 
     }
+
+    ~UI_MainMenu() {
+        delete play_btn;
+        delete quit_btn;
+    }
 };
 
 

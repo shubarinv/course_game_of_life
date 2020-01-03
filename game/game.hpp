@@ -76,10 +76,11 @@ private:
         uiEditGameField uiEditGameField(uiManager, win, "ru", gameField);
 
         while (!inputManager->quitEventCheck()) {
-            if (frameTime >= 100) {
-                state = 'q';
-                throw runtime_error("Game took too much time to render: " + to_string(frameTime));
-            }
+            /*   if (frameTime >= 100) {
+                   state = 'q';
+                   throw runtime_error("Game took too much time to render: " + to_string(frameTime));
+               }*/
+
             frameStart = SDL_GetTicks();
             curTime = SDL_GetTicks();
             cout << "Frame delay: " << frameTime << endl;
@@ -159,7 +160,8 @@ private:
                 SDL_Delay(frameDelay - frameTime);
             }
         }
-
+        delete gameField;
+        delete inputManager;
         SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying render");
         SDL_DestroyRenderer(ren);
         SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Render Destroyed\nDestroying window");
