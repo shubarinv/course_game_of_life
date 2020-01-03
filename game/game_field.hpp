@@ -36,9 +36,12 @@ public:
             SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "GameField->constructor: Window is null");
             throw std::runtime_error("GameField->constructor: Window is null");
         }
+        if (_renderer == nullptr) {
+            std::string error = SDL_GetError();
+            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "GameField->constructor: _renderer is null");
+            throw std::runtime_error("GameField->constructor: _renderer is null");
+        }
         renderer = _renderer;
-        /// TODO: add nullptr catch for renderer
-
         int h, w;
         SDL_GetWindowSize(window, &w, &h);
         std::random_device rd;

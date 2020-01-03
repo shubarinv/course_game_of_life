@@ -83,7 +83,7 @@ private:
             frameStart = SDL_GetTicks();
             curTime = SDL_GetTicks();
             cout << "Frame delay: " << frameTime << endl;
-            SDL_SetRenderDrawColor(ren, 80, 80, 253, 255);
+            SDL_SetRenderDrawColor(ren, 86, 86, 86, 255);
             if (SDL_RenderClear(ren) < 0) {
                 SDL_DestroyWindow(win);
                 std::string error = SDL_GetError();
