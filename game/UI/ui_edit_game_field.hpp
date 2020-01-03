@@ -35,7 +35,6 @@ public:
             tmp->next_state = startingState;
         }
         if (uiManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
-            cout << "Next state" << tmp->next_state << endl;
             if (tmp->next_state == 'a') {
                 tmp->state = 'd';
                 tmp->next_state = '-';

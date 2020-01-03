@@ -24,7 +24,6 @@ private:
     InputManager *inputManager{};
     UI_Manager *uiManager;
     char state = 'm';///< r-playing game| p-pause| m-main_Menu| e-Editing field
-    int prevCells = 0;
 public:
     Game() {
         std::cout << "Trying to init SDL2..." << std::endl;
@@ -55,7 +54,7 @@ public:
         uiManager = new UI_Manager(SDL_GetWindowSurface(win), ren, win,
                                    nullptr); //init UI_Manager and font related stuff
         gameField = new GameField(win, ren);
-        gameField->checkForNeibourghs();
+        gameField->checkForNeighbors();
         inputManager = new InputManager();
         uiManager = new UI_Manager(SDL_GetWindowSurface(win), ren, win,
                                    inputManager); //init UI_Manager and font related stuff
@@ -76,10 +75,10 @@ private:
         uiEditGameField uiEditGameField(uiManager, win, "ru", gameField);
 
         while (!inputManager->quitEventCheck()) {
-               if (frameTime >= 100) {
-                   state = 'q';
-                   throw runtime_error("Game took too much time to render: " + to_string(frameTime));
-               }
+            if (frameTime >= 100) {
+                state = 'q';
+                throw runtime_error("Game took too much time to render: " + to_string(frameTime));
+            }
 
             frameStart = SDL_GetTicks();
             curTime = SDL_GetTicks();
@@ -104,7 +103,7 @@ private:
                 showDialog = true;
                 if (curTime >= endTime) {
                     endTime = SDL_GetTicks() + 90;
-                    gameField->checkForNeibourghs();
+                    gameField->checkForNeighbors();
                     gameField->drawBoard();
                 } else {
                     gameField->drawBoard();
@@ -113,7 +112,6 @@ private:
                 gameField->drawBoard();
                 uiManager->printText("Cells: " + to_string(gameField->getAliveCells()), 10, 20, {247, 217, 63}, 25);
                 SDL_RenderPresent(ren);
-                prevCells = gameField->getAliveCells();
             }
             if (state == 'm') {
                 uiMainMenu.show();
@@ -121,7 +119,20 @@ private:
 
             }
             if (state == 'p') {
-                
+
+            }
+            if (inputManager->getEvent().key.keysym.sym == SDLK_e && inputManager->getEvent().type == SDL_KEYDOWN &&
+                state == 'e') {
+                state = 'r';
+                if (gameField->countAliveCells() > 300)
+                    uiManager->printText("Wait a sec please...",
+                                         uiManager->getWindowResolutionX() /
+                                         2 - uiManager->getTextSize(
+                                                 "Wait a sec please...",
+                                                 40).a,
+                                         uiManager->getWindowResolutionY() /
+                                         2 - 20, {255, 0, 0}, 40);
+                SDL_RenderPresent(ren);
             }
             if (state == 'e') {
                 switch (inputManager->getEvent().key.keysym.sym) {
@@ -129,19 +140,13 @@ private:
                         if (inputManager->getEvent().type == SDL_KEYDOWN)
                             gameField->clearBoard();
                         break;
-                    case SDLK_e:
-                        if (inputManager->getEvent().type == SDL_KEYDOWN) {
-                            state = 'r';
-                            continue;
-                        }
-                        break;
                 }
                 if (showDialog) {
                     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
                                              "EDIT MODE",
                                              "Включен режим редактирования.\nДля отчистки поля нажмите 'C'\nДля выхода из режима нажмите 'E",
                                              NULL);
-                    gameField->checkForNeibourghs();
+                    gameField->checkForNeighbors();
                     frameStart = SDL_GetTicks();
                 }
                 showDialog = false;

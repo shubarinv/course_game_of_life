@@ -87,30 +87,30 @@ public:
     }
 
     /// @brief checking compliance with rules
-    void checkForNeibourghs() {
-        int neibourghs = 0;
+    void checkForNeighbors() {
+        int neighbors = 0;
         aliveCells = countAliveCells();
         for (int i = 0; i < cells.size(); ++i) {
             for (int j = 0; j < cells[0].size(); ++j) {
-                if (getElement(i, j - 1)->state == 'a')neibourghs++; //checking cell on the left
-                if (getElement(i, j + 1)->state == 'a')neibourghs++; //checking cell on the right
-                if (getElement(i - 1, j)->state == 'a')neibourghs++; //checking cell on the top
-                if (getElement(i + 1, j)->state == 'a')neibourghs++; //checking cell on the bottom
-                if (getElement(i - 1, j - 1)->state == 'a')neibourghs++; //checking cell on the top left
-                if (getElement(i - 1, j + 1)->state == 'a')neibourghs++; //checking cell on the top right
-                if (getElement(i + 1, j - 1)->state == 'a')neibourghs++; //checking cell on the bottom left
-                if (getElement(i + 1, j + 1)->state == 'a')neibourghs++; //checking cell on the bottom right
-                if (neibourghs < 2) {
+                if (getElement(i, j - 1)->state == 'a')neighbors++; //checking cell on the left
+                if (getElement(i, j + 1)->state == 'a')neighbors++; //checking cell on the right
+                if (getElement(i - 1, j)->state == 'a')neighbors++; //checking cell on the top
+                if (getElement(i + 1, j)->state == 'a')neighbors++; //checking cell on the bottom
+                if (getElement(i - 1, j - 1)->state == 'a')neighbors++; //checking cell on the top left
+                if (getElement(i - 1, j + 1)->state == 'a')neighbors++; //checking cell on the top right
+                if (getElement(i + 1, j - 1)->state == 'a')neighbors++; //checking cell on the bottom left
+                if (getElement(i + 1, j + 1)->state == 'a')neighbors++; //checking cell on the bottom right
+                if (neighbors < 2) {
                     cells[i][j].next_state = 'd';
                     cells[i][j].deathReason = 'l';
-                } else if (neibourghs > 3) {
+                } else if (neighbors > 3) {
                     cells[i][j].next_state = 'd';
                     cells[i][j].deathReason = 'c';
-                } else if (neibourghs == 3) {
+                } else if (neighbors == 3) {
                     cells[i][j].next_state = 'b';
                     cells[i][j].deathReason = 'u';
                 }
-                neibourghs = 0;
+                neighbors = 0;
             }
         }
         for (auto &cell : cells) {
