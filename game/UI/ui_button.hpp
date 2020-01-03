@@ -65,16 +65,22 @@ public:
     }
 
     void draw(int x, int y) {
+        SDL_RenderDrawRect(uiManager->getRenderer(), &body);
         hover = collisionCheck(x, y);
         if (enabled) {
             if (hover) {
+                SDL_SetRenderDrawColor(uiManager->getRenderer(), hoverColor.r, hoverColor.g, hoverColor.b, 255);
                 SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, UI_Manager::rgbToHex(hoverColor));
             } else {
+                SDL_SetRenderDrawColor(uiManager->getRenderer(), defaultColor.r, defaultColor.g, defaultColor.b, 255);
                 SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, UI_Manager::rgbToHex(defaultColor));
             }
         } else {
+            SDL_SetRenderDrawColor(uiManager->getRenderer(), disabledColor.r, disabledColor.g, disabledColor.b, 255);
             SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, UI_Manager::rgbToHex(disabledColor));
         }
+        // Render rect
+        SDL_RenderFillRect(uiManager->getRenderer(), &body);
         uiManager->printText(text, textPosX, textPosY, {255, 255, 255}, fontSize);
     }
 

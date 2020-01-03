@@ -89,7 +89,7 @@ public:
                                                             surfaceMessage); //now you can convert it into a texture
         SDL_Rect Message_rect; //create a rect
         Message_rect.x = x;  //controls the rect's x coordinate
-        Message_rect.y = y; // controls the rect's y coordinte
+        Message_rect.y = y; // controls the rect's y coordinate
         TTF_SizeUTF8(font, text.c_str(), &Message_rect.w, &Message_rect.h);
         SDL_RenderCopy(renderer, Message, nullptr,
                        &Message_rect); //you put the renderer's name first, the Message, the crop size(you can ignore this if you don't want to dabble with cropping), and the rect which is the size and coordinate of your texture

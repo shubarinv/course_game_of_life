@@ -17,110 +17,121 @@ using namespace std;
 
 class GameField {
 private:
-	SDL_Window *window;
-	int aliveCells = 0;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    int aliveCells = 0;
 public:
-	[[nodiscard]] int getAliveCells() const {
-		return aliveCells;
-	}
+    [[nodiscard]] int getAliveCells() const {
+        return aliveCells;
+    }
 
 public:
-	std::vector<std::vector<Cell>> cells;
+    std::vector<std::vector<Cell>> cells;
 
-	explicit GameField(SDL_Window *game_window) {
-		window = game_window;
+    explicit GameField(SDL_Window *game_window, SDL_Renderer *_renderer) {
+        window = game_window;
 
-		if (window == nullptr) {
-			std::string error = SDL_GetError();
-			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "GameField->constructor: Window is null");
-			throw std::runtime_error("GameField->constructor: Window is null");
-		}
+        if (window == nullptr) {
+            std::string error = SDL_GetError();
+            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "GameField->constructor: Window is null");
+            throw std::runtime_error("GameField->constructor: Window is null");
+        }
+        renderer = _renderer;
+        /// TODO: add nullptr catch for renderer
 
-		int h, w;
-		SDL_GetWindowSize(window, &w, &h);
-		std::random_device rd;
-		std::mt19937 gen(rd());
-		std::uniform_int_distribution<> dis(1, 10000);
+        int h, w;
+        SDL_GetWindowSize(window, &w, &h);
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(1, 10000);
 
-		for (int i = 0; i <= w / 16; ++i) {
-			vector<Cell> row;
-			for (int j = 0; j <= h / 16; j++) {
-				row.emplace_back(window);
-				row.back().setLocation(i, j);
-				unsigned int num = dis(gen);
-				if (num % 2 == 0) {
-					row.back().state = 'u';
-				} else {
-					row.back().state = 'a';
-				}
-			}
-			cells.push_back(row);
-		}
-	}
+        for (int i = 0; i <= w / 16; ++i) {
+            vector<Cell> row;
+            for (int j = 0; j <= h / 16; j++) {
+                row.emplace_back(window, renderer);
+                row.back().setLocation(i, j);
+                unsigned int num = dis(gen);
+                if (num % 5 != 0) {
+                    row.back().state = 'u';
+                } else {
+                    row.back().state = 'a';
+                }
+            }
+            cells.push_back(row);
+        }
+    }
 
-	void drawBoard() {
-		if (cells.empty()) {
-			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "GameField->drawBoard: Cells array is empty");
-			//throw std::runtime_error("GameField->drawBoard: Cells array is NULL");
-		}
+    void clearBoard() {
+        for (auto &cell : cells) {
+            for (int j = 0; j < cells[0].size(); j++) {
+                cell[j].state = 'd';
+            }
+        }
+    }
 
-		int h, w;
-		SDL_GetWindowSize(window, &w, &h);
+    void drawBoard() {
+        if (cells.empty()) {
+            SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "GameField->drawBoard: Cells array is empty");
+            //throw std::runtime_error("GameField->drawBoard: Cells array is NULL");
+        }
 
-		for (int i = 0; i < w / 16; ++i) {
-			for (int j = 0; j < h / 16; ++j) {
-				cells[i][j].redraw();
-			}
-		}
+        int h, w;
+        SDL_GetWindowSize(window, &w, &h);
 
-	}
+        for (int i = 0; i < w / 16; ++i) {
+            for (int j = 0; j < h / 16; ++j) {
+                cells[i][j].redraw();
+            }
+        }
 
-	/// @brief checking compliance with rules
-	void checkForNeibourghs() {
-		int neibourghs = 0;
-		aliveCells = 0;
-		for (int i = 0; i < cells.size(); ++i) {
-			for (int j = 0; j < cells[0].size(); ++j) {
-				if (getElement(i, j)->state == 'a') aliveCells++;
-				if (getElement(i, j - 1)->state == 'a')neibourghs++; //checking cell on the left
-				if (getElement(i, j + 1)->state == 'a')neibourghs++; //checking cell on the right
-				if (getElement(i - 1, j)->state == 'a')neibourghs++; //checking cell on the top
-				if (getElement(i + 1, j)->state == 'a')neibourghs++; //checking cell on the bottom
-				if (getElement(i - 1, j - 1)->state == 'a')neibourghs++; //checking cell on the top left
-				if (getElement(i - 1, j + 1)->state == 'a')neibourghs++; //checking cell on the top right
-				if (getElement(i + 1, j - 1)->state == 'a')neibourghs++; //checking cell on the bottom left
-				if (getElement(i + 1, j + 1)->state == 'a')neibourghs++; //checking cell on the bottom right
-				if (neibourghs < 2) {
-					cells[i][j].next_state = 'd';
-					cells[i][j].deathReason = 'l';
-				} else if (neibourghs > 3) {
-					cells[i][j].next_state = 'd';
-					cells[i][j].deathReason = 'c';
-				} else if (neibourghs == 3) {
-					cells[i][j].next_state = 'b';
-					cells[i][j].deathReason = 'u';
-				}
-				neibourghs = 0;
-			}
-		}
-		for (auto &cell : cells) {
-			for (int j = 0; j < cells[0].size(); ++j) {
-				cell[j].applyNewState();
-			}
-		}
-	}
+    }
 
-	Cell *getElement(int column, int row) {
-		if (column < 0)
-			column = cells.size() - 1;
-		if (column == cells.size())
-			column = 0;
-		if (row < 0)
-			row = cells[column].size() - 1;
-		if (row == cells[column].size())
-			row = 0;
-		return &cells[column][row];
-	}
+    /// @brief checking compliance with rules
+    void checkForNeibourghs() {
+        int neibourghs = 0;
+        aliveCells = 0;
+        for (int i = 0; i < cells.size(); ++i) {
+            for (int j = 0; j < cells[0].size(); ++j) {
+                if (getElement(i, j)->state == 'a') aliveCells++;
+                if (getElement(i, j - 1)->state == 'a')neibourghs++; //checking cell on the left
+                if (getElement(i, j + 1)->state == 'a')neibourghs++; //checking cell on the right
+                if (getElement(i - 1, j)->state == 'a')neibourghs++; //checking cell on the top
+                if (getElement(i + 1, j)->state == 'a')neibourghs++; //checking cell on the bottom
+                if (getElement(i - 1, j - 1)->state == 'a')neibourghs++; //checking cell on the top left
+                if (getElement(i - 1, j + 1)->state == 'a')neibourghs++; //checking cell on the top right
+                if (getElement(i + 1, j - 1)->state == 'a')neibourghs++; //checking cell on the bottom left
+                if (getElement(i + 1, j + 1)->state == 'a')neibourghs++; //checking cell on the bottom right
+                if (neibourghs < 2) {
+                    cells[i][j].next_state = 'd';
+                    cells[i][j].deathReason = 'l';
+                } else if (neibourghs > 3) {
+                    cells[i][j].next_state = 'd';
+                    cells[i][j].deathReason = 'c';
+                } else if (neibourghs == 3) {
+                    cells[i][j].next_state = 'b';
+                    cells[i][j].deathReason = 'u';
+                }
+                neibourghs = 0;
+            }
+        }
+        for (auto &cell : cells) {
+            for (int j = 0; j < cells[0].size(); ++j) {
+                cell[j].applyNewState();
+            }
+        }
+    }
+
+    Cell *getElement(int column, int row) {
+        if (column < 0)
+            column = cells.size() - 1;
+        if (column == cells.size())
+            column = 0;
+        if (row < 0)
+            row = cells[column].size() - 1;
+        if (row == cells[column].size())
+            row = 0;
+        return &cells[column][row];
+    }
 };
 
 

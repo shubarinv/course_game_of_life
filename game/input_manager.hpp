@@ -8,6 +8,7 @@
 
 #include <SDL_events.h>
 #include <SDL.h>
+#include "game.hpp"
 
 class InputManager {
     struct mouseCoords {
