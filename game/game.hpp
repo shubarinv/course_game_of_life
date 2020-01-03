@@ -76,10 +76,10 @@ private:
         uiEditGameField uiEditGameField(uiManager, win, "ru", gameField);
 
         while (!inputManager->quitEventCheck()) {
-            /*   if (frameTime >= 100) {
+               if (frameTime >= 100) {
                    state = 'q';
                    throw runtime_error("Game took too much time to render: " + to_string(frameTime));
-               }*/
+               }
 
             frameStart = SDL_GetTicks();
             curTime = SDL_GetTicks();
@@ -111,9 +111,6 @@ private:
                 }
 
                 gameField->drawBoard();
-                if (prevCells == gameField->getAliveCells()) {
-                    cout << "Kinda STABLE CONFIG" << endl;
-                }
                 uiManager->printText("Cells: " + to_string(gameField->getAliveCells()), 10, 20, {247, 217, 63}, 25);
                 SDL_RenderPresent(ren);
                 prevCells = gameField->getAliveCells();
@@ -124,7 +121,7 @@ private:
 
             }
             if (state == 'p') {
-
+                
             }
             if (state == 'e') {
                 switch (inputManager->getEvent().key.keysym.sym) {
@@ -150,6 +147,7 @@ private:
                 showDialog = false;
 
                 gameField->drawBoard();
+                uiManager->printText("Cells: " + to_string(gameField->countAliveCells()), 10, 20, {247, 217, 63}, 25);
                 uiEditGameField.show();
             }
             if (state == 'q') break;

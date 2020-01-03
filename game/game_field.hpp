@@ -89,10 +89,9 @@ public:
     /// @brief checking compliance with rules
     void checkForNeibourghs() {
         int neibourghs = 0;
-        aliveCells = 0;
+        aliveCells = countAliveCells();
         for (int i = 0; i < cells.size(); ++i) {
             for (int j = 0; j < cells[0].size(); ++j) {
-                if (getElement(i, j)->state == 'a') aliveCells++;
                 if (getElement(i, j - 1)->state == 'a')neibourghs++; //checking cell on the left
                 if (getElement(i, j + 1)->state == 'a')neibourghs++; //checking cell on the right
                 if (getElement(i - 1, j)->state == 'a')neibourghs++; //checking cell on the top
@@ -119,6 +118,16 @@ public:
                 cell[j].applyNewState();
             }
         }
+    }
+
+    int countAliveCells() {
+        int _aliveCells = 0;
+        for (int i = 0; i < cells.size(); ++i) {
+            for (int j = 0; j < cells[0].size(); ++j) {
+                if (getElement(i, j)->state == 'a') _aliveCells++;
+            }
+        }
+        return _aliveCells;
     }
 
     Cell *getElement(int column, int row) {
