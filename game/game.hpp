@@ -23,6 +23,7 @@ private:
     GameField *gameField{};
     InputManager *inputManager{};
     UI_Manager *uiManager;
+    Uint64 eButtonPress = 0;
     char state = 'm';///< r-playing game| p-pause| m-main_Menu| e-Editing field
 public:
     Game() {
@@ -75,7 +76,7 @@ private:
         uiEditGameField uiEditGameField(uiManager, win, "ru", gameField);
 
         while (!inputManager->quitEventCheck()) {
-            if (frameTime >= 100) {
+            if (frameTime >= 2000) {
                 state = 'q';
                 throw runtime_error("Game took too much time to render: " + to_string(frameTime));
             }
@@ -94,8 +95,9 @@ private:
             if (state == 'r') {
                 switch (inputManager->getEvent().key.keysym.sym) {
                     case SDLK_e:
-                        if (inputManager->getEvent().type == SDL_KEYDOWN) {
+                        if (inputManager->getEvent().type == SDL_KEYDOWN && SDL_GetTicks() - eButtonPress > 1000) {
                             state = 'e';
+                            eButtonPress = SDL_GetTicks();
                             continue;
                         }
                         break;
@@ -118,11 +120,31 @@ private:
                 state = uiMainMenu.act();
 
             }
-            if (state == 'p') {
+            /* if (inputManager->getEvent().key.keysym.sym == SDLK_p) {
+                 if (inputManager->getEvent().type == SDL_KEYDOWN &&
+                     state == 'p')
+                     state = 'r';
+                 else state = 'p';
+                 continue;
+             }
+             if (state == 'p') {
+                 uiManager->printText("PAUSE",
+                                      uiManager->getWindowResolutionX() /
+                                      2 - uiManager->getTextSize(
+                                              "PAUSE",
+                                              40).a,
+                                      uiManager->getWindowResolutionY() /
+                                      2 - uiManager->getTextSize(
+                                              "PAUSE",
+                                              40).b, {255, 0, 0}, 40);
+                 frameStart = SDL_GetTicks();
+                 SDL_RenderPresent(ren);
+                 continue;
 
-            }
+             }*/
             if (inputManager->getEvent().key.keysym.sym == SDLK_e && inputManager->getEvent().type == SDL_KEYDOWN &&
-                state == 'e') {
+                state == 'e' && SDL_GetTicks() - eButtonPress > 1000) {
+                eButtonPress = SDL_GetTicks();
                 state = 'r';
                 if (gameField->countAliveCells() > 300)
                     uiManager->printText("Wait a sec please...",
@@ -133,6 +155,7 @@ private:
                                          uiManager->getWindowResolutionY() /
                                          2 - 20, {255, 0, 0}, 40);
                 SDL_RenderPresent(ren);
+                continue;
             }
             if (state == 'e') {
                 switch (inputManager->getEvent().key.keysym.sym) {
