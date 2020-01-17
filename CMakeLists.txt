@@ -23,18 +23,18 @@ link_libraries(
         ${SDL2_LIBRARY}
         ${SDL2TTF_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}
-        SDLmain # Sadly not included in SDL_LIBRARY variable
+     #   SDLmain # Sadly not included in SDL_LIBRARY variable
 )
 set(CMAKE_CXX_STANDARD 17)
 #add_executable(progOnHLang ex1main.cpp)
 add_executable(progOnHLang driver.cpp game/game.hpp game/UI/ui_base.hpp game/UI/ui_manager.hpp game/game_field.hpp game/cell.hpp game/UI/ui_main_menu.hpp game/UI/ui_button.hpp game/input_manager.hpp game/UI/ui_edit_game_field.hpp)
 include_directories(${SDL2_INCLUDE_DIR}
         ${SDL2_IMAGE_INCLUDE_DIR}
-        ${SDL2_MIXER_INCLUDE_DIR}
+        #  ${SDL2_MIXER_INCLUDE_DIR}
         ${SDL2TFF_LIBRARY}
         )
 target_link_libraries(progOnHLang ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}
-        ${SDL2_MIXER_LIBRARY}
+        # ${SDL2_MIXER_LIBRARY}
         ${SDL2TFF_LIBRARY}
         )

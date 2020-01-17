@@ -3,7 +3,7 @@
 //
 // Created by vhundef on 24.12.2019.
 //
-int main() {
+int main(int argc, char *argv[]) {
 	Game game;
-    return 0;
+	return 0;
 }
