@@ -80,6 +80,7 @@ private:
 
         int frameDelay = 2;
         bool showDialog = true;
+        Uint64 lastSave = SDL_GetTicks();
         UI_MainMenu uiMainMenu(uiManager, win, "ru");
         uiEditGameField uiEditGameField(uiManager, win, "ru", gameField);
 
@@ -92,6 +93,7 @@ private:
             frameStart = SDL_GetTicks();
             curTime = SDL_GetTicks();
             cout << "Frame delay: " << frameTime << endl;
+            cout << "State: " << state << endl;
             SDL_SetRenderDrawColor(ren, 86, 86, 86, 255);
             if (SDL_RenderClear(ren) < 0) {
                 SDL_DestroyWindow(win);
@@ -109,6 +111,13 @@ private:
                             continue;
                         }
                         break;
+                    case SDLK_s:
+                        if (SDL_GetTicks() - lastSave >= 2000) {
+                            gameField->save();
+                            cout << "Saved!" << endl;
+                            lastSave = SDL_GetTicks();
+                        }
+
                 }
                 showDialog = true;
                 if (curTime >= endTime) {
@@ -175,7 +184,7 @@ private:
                 if (showDialog) {
                     SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
                                              "EDIT MODE",
-                                             "Включен режим редактирования.\nДля отчистки поля нажмите 'C'\nДля выхода из режима нажмите 'E",
+                                             "You are entering edit mode.\nTo clear field press 'C'\nTo quit press 'E'",
                                              NULL);
                     gameField->checkForNeighbors();
                     frameStart = SDL_GetTicks();
