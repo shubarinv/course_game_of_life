@@ -61,17 +61,11 @@ public:
 		uiManager = new UI_Manager(SDL_GetWindowSurface(win), ren, win,
 		                           inputManager); //init UI_Manager and font related stuff
 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL2 init - Good\nGame Start");
-		showRules();
 		run(); // Starts the game
 	}
 
 private:
-	void showRules() {
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
-		                         "Rules",
-		                         "You can edit field by pressing E.\n\nMade by Vladimir Shubarin\n",
-		                         NULL);
-	}
+
 
 	int run() {
 		Uint64 frameStart;
