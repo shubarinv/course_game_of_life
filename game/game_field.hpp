@@ -10,6 +10,7 @@
 #include <SDL_log.h>
 #include <stdexcept>
 #include "cell.hpp"
+#include <utility>
 #include <vector>
 #include <random>
 #include <fstream>
@@ -148,24 +149,13 @@ public:
 		return &cells[column][row];
 	}
 
-	void save() {
-		string fileName = "maps/" + to_string(std::time(0)) + ".field";
-		ofstream out(fileName.c_str(), ios_base::out);
-		if (!out.is_open()) {
-			throw runtime_error("GameField in save() unable to create file called: " + fileName);
-		}
-		for (auto &cell : cells) {
-			for (int j = 0; j < cells[0].size(); ++j) {
-				out << cell[j].state;
-			}
-			out << endl;
-		}
+	std::vector<std::vector<Cell>> getField() {
+		return cells;
 	}
 
-	void loadSave() {
-		cout << "Not yet implemented"
+	void setField(std::vector<std::vector<Cell>> field) {
+		cells = std::move(field);
 	}
-
 };
 
 
