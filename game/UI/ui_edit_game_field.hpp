@@ -29,19 +29,19 @@ public:
                                           Cell::getRelativeLocation(uiManager->getInputManager()->getMouseCoords().x,
                                                                     uiManager->getInputManager()->getMouseCoords().y).b);
         if (prevCell != tmp && prevCell != nullptr) {
-            prevCell->applyNewState();
-            startingState = tmp->state;
-            tmp->state = 'h';
-            tmp->next_state = startingState;
+	        prevCell->applyNewState();
+	        startingState = tmp->getState();
+	        tmp->setState('h');
+	        tmp->next_state = startingState;
         }
         if (uiManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
             if (tmp->next_state == 'a') {
-                tmp->state = 'd';
-                tmp->next_state = '-';
+	            tmp->setState('d');
+	            tmp->next_state = '-';
             }
             if (tmp->next_state == 'd') {
-                tmp->state = 'a';
-                tmp->next_state = '-';
+	            tmp->setState('b');
+	            tmp->next_state = '-';
             }
         }
         prevCell = tmp;

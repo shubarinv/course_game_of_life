@@ -59,9 +59,9 @@ public:
 				row.back().setLocation(i, j);
 				unsigned int num = dis(gen);
 				if (num % 5 != 0) {
-					row.back().state = 'u';
+					row.back().setState('u');
 				} else {
-					row.back().state = 'a';
+					row.back().setState('a');
 				}
 			}
 			cells.push_back(row);
@@ -71,7 +71,7 @@ public:
 	void clearBoard() {
 		for (auto &cell : cells) {
 			for (int j = 0; j < cells[0].size(); j++) {
-				cell[j].state = 'd';
+				cell[j].setState('d');
 			}
 		}
 	}
@@ -99,14 +99,14 @@ public:
 		aliveCells = countAliveCells();
 		for (int i = 0; i < cells.size(); ++i) {
 			for (int j = 0; j < cells[0].size(); ++j) {
-				if (getElement(i, j - 1)->state == 'a')neighbors++; //checking cell on the left
-				if (getElement(i, j + 1)->state == 'a')neighbors++; //checking cell on the right
-				if (getElement(i - 1, j)->state == 'a')neighbors++; //checking cell on the top
-				if (getElement(i + 1, j)->state == 'a')neighbors++; //checking cell on the bottom
-				if (getElement(i - 1, j - 1)->state == 'a')neighbors++; //checking cell on the top left
-				if (getElement(i - 1, j + 1)->state == 'a')neighbors++; //checking cell on the top right
-				if (getElement(i + 1, j - 1)->state == 'a')neighbors++; //checking cell on the bottom left
-				if (getElement(i + 1, j + 1)->state == 'a')neighbors++; //checking cell on the bottom right
+				if (getElement(i, j - 1)->getState() == 'a')neighbors++; //checking cell on the left
+				if (getElement(i, j + 1)->getState() == 'a')neighbors++; //checking cell on the right
+				if (getElement(i - 1, j)->getState() == 'a')neighbors++; //checking cell on the top
+				if (getElement(i + 1, j)->getState() == 'a')neighbors++; //checking cell on the bottom
+				if (getElement(i - 1, j - 1)->getState() == 'a')neighbors++; //checking cell on the top left
+				if (getElement(i - 1, j + 1)->getState() == 'a')neighbors++; //checking cell on the top right
+				if (getElement(i + 1, j - 1)->getState() == 'a')neighbors++; //checking cell on the bottom left
+				if (getElement(i + 1, j + 1)->getState() == 'a')neighbors++; //checking cell on the bottom right
 				if (neighbors < 2) {
 					cells[i][j].next_state = 'd';
 					cells[i][j].deathReason = 'l';
@@ -131,7 +131,7 @@ public:
 		int _aliveCells = 0;
 		for (int i = 0; i < cells.size(); ++i) {
 			for (int j = 0; j < cells[0].size(); ++j) {
-				if (getElement(i, j)->state == 'a') _aliveCells++;
+				if (getElement(i, j)->getState() == 'a') _aliveCells++;
 			}
 		}
 		return _aliveCells;
