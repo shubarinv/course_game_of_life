@@ -26,10 +26,10 @@ public:
 
 	char act() {
 		if (play_btn->isHover() && uiManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+			/*SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
 			                         "Rules",
 			                         "You can edit field by pressing E.",
-			                         NULL);
+			                         NULL);*/
 			return 'r';
 		} else if (quit_btn->isHover() &&
 		           uiManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) { return 'q'; }

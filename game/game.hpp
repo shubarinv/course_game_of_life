@@ -84,22 +84,17 @@ private:
         SDL_RaiseWindow(win);
 
 		while (!inputManager->quitEventCheck()) {
-			if (frameTime >= 2000) {
-				state = 'q';
-				throw runtime_error("Game took too much time to render: " + to_string(frameTime));
-			}
-
-			frameStart = SDL_GetTicks();
-			curTime = SDL_GetTicks();
-			cout << "Frame delay: " << frameTime << endl;
-			cout << "State: " << state << endl;
-			SDL_SetRenderDrawColor(ren, 86, 86, 86, 255);
+			SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
 			if (SDL_RenderClear(ren) < 0) {
 				SDL_DestroyWindow(win);
 				std::string error = SDL_GetError();
 				SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
 				throw std::runtime_error("Unable to clear render (SDL2)");
 			}
+			frameStart = SDL_GetTicks();
+			curTime = SDL_GetTicks();
+			cout << "Frame delay: " << frameTime << endl;
+			cout << "State: " << state << endl;
 			inputManager->updateEvents();
 			if (state == 'r') {
 				switch (inputManager->getEvent().key.keysym.sym) {
@@ -128,8 +123,7 @@ private:
 				}
 
 				gameField->drawBoard();
-				uiManager->printText("Cells: " + to_string(gameField->getAliveCells()), 10, 20, {247, 217, 63}, 25);
-				SDL_RenderPresent(ren);
+				uiManager->printText("Cells: " + to_string(gameField->getAliveCells()), 10, 20, {0, 0, 0}, 25);
 			}
 			if (state == 'm') {
 				uiMainMenu.show();
