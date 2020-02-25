@@ -106,7 +106,7 @@ class Game {
 			break;
 		  case SDLK_s:
 			if (SDL_GetTicks() - lastSave >= 2000) {
-			  // gameField->save();
+			   //gameField->save();
 			  cout << "Saved!" << endl;
 			  lastSave = SDL_GetTicks();
 			}
@@ -124,8 +124,12 @@ class Game {
 		uiManager->printText("Cells: " + to_string(gameField->getAliveCells()), 10, 20, {0, 0, 0}, 25);
 	  }
 	  if (state == 'm') {
+		//gameField->drawBoard();
+		//gameField->checkForNeighbors();
 		uiMainMenu.show();
 		state = uiMainMenu.act();
+
+		if (state == 'r') {gameField->clearBoard();gameField->randomiseField();}
 	  }
 	  /* if (inputManager->getEvent().key.keysym.sym == SDLK_p) {
 				 if (inputManager->getEvent().type == SDL_KEYDOWN &&
