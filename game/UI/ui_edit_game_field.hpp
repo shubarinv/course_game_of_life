@@ -5,49 +5,49 @@
 #ifndef PROGONHLANG_UI_EDIT_GAME_FIELD_HPP
 #define PROGONHLANG_UI_EDIT_GAME_FIELD_HPP
 
-
-#include "ui_base.hpp"
 #include "../game_field.hpp"
+#include "ui_base.hpp"
 
 class uiEditGameField : private virtual UI_Base {
-private:
-    GameField *gameField;
-    Cell *prevCell = nullptr;
-    char startingState = ' ';
-public:
-    uiEditGameField(UI_Manager *ui_Manager, SDL_Window *window, std::string _locale, GameField *_gameField) : UI_Base(
-            ui_Manager, window,
-            std::move(_locale)) {
-        gameField = _gameField;
-    }
+ private:
+  GameField *gameField;
+  Cell *prevCell = nullptr;
+  char startingState = ' ';
 
-    void show() {
-        uiManager->printText("EDIT", uiManager->getWindowResolutionX() / 2 - uiManager->getTextSize("EDIT", 30).a,
-                             uiManager->getTextSize("EDIT", 30).b / 2, {255, 255, 255}, 30);
-        Cell *tmp = gameField->getElement(Cell::getRelativeLocation(uiManager->getInputManager()->getMouseCoords().x,
-                                                                    uiManager->getInputManager()->getMouseCoords().y).a,
-                                          Cell::getRelativeLocation(uiManager->getInputManager()->getMouseCoords().x,
-                                                                    uiManager->getInputManager()->getMouseCoords().y).b);
-        if (prevCell != tmp && prevCell != nullptr) {
-	        prevCell->applyNewState();
-	        startingState = tmp->getState();
-	        tmp->setState('h');
-	        tmp->next_state = startingState;
-        }
-        if (uiManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
-            if (tmp->next_state == 'a') {
-	            tmp->setState('d');
-	            tmp->next_state = '-';
-            }
-            if (tmp->next_state == 'd') {
-	            tmp->setState('b');
-	            tmp->next_state = '-';
-            }
-        }
-        prevCell = tmp;
+ public:
+  uiEditGameField(UI_Manager *ui_Manager, SDL_Window *window, std::string _locale, GameField *_gameField) : UI_Base(
+	  ui_Manager, window,
+	  std::move(_locale)) {
+	gameField = _gameField;
+  }
 
-    }
+  void show() {
+	uiManager->printText("EDIT", uiManager->getWindowResolutionX() / 2 - uiManager->getTextSize("EDIT", 30).a,
+						 uiManager->getTextSize("EDIT", 30).b / 2, {255, 255, 255}, 30);
+	Cell *tmp = gameField->getElement(Cell::getRelativeLocation(uiManager->getInputManager()->getMouseCoords().x,
+																uiManager->getInputManager()->getMouseCoords().y)
+										  .a,
+									  Cell::getRelativeLocation(uiManager->getInputManager()->getMouseCoords().x,
+																uiManager->getInputManager()->getMouseCoords().y)
+										  .b);
+	if (prevCell != tmp && prevCell != nullptr) {
+	  prevCell->applyNewState();
+	  startingState = tmp->getState();
+	  tmp->setState('h');
+	  tmp->next_state = startingState;
+	}
+	if (uiManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
+	  if (tmp->next_state == 'a') {
+		tmp->setState('d');
+		tmp->next_state = '-';
+	  }
+	  if (tmp->next_state == 'd') {
+		tmp->setState('b');
+		tmp->next_state = '-';
+	  }
+	}
+	prevCell = tmp;
+  }
 };
 
-
-#endif //PROGONHLANG_UI_EDIT_GAME_FIELD_HPP
+#endif//PROGONHLANG_UI_EDIT_GAME_FIELD_HPP
