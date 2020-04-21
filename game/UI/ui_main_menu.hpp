@@ -24,20 +24,20 @@ class UI_MainMenu : private virtual UI_Base {
 	  SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "1");
 	  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Rules", "You can edit field by pressing E.", NULL);
 	  SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-	  return 'r'; // запуск игры
+	  return 'r';// запуск игры
 
 	} else if (quit_btn->isHover() && screenManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
-	  return 'q'; // выход из игры
+	  return 'q';// выход из игры
 
 	} else
-	  return 'm'; //< Открывает главное меню
+	  return 'm';//< Открывает главное меню
   }
 
   uiButton *play_btn;
   uiButton *quit_btn;
 
   explicit UI_MainMenu(ScreenManager *_screenManager) {
-	screenManager=_screenManager;
+	screenManager = _screenManager;
 	play_btn = new uiButton(menuStrings["Start_En"], screenManager, screenManager->getWindowResolutionX() / 2 - 100, 150, 200, 50, 20);
 	quit_btn = new uiButton(menuStrings["Quit_En"], screenManager, screenManager->getWindowResolutionX() / 2 - 100, 250, 200, 50, 20);
   }
