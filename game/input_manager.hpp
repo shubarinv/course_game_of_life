@@ -11,24 +11,27 @@
 #include "game.hpp"
 
 class InputManager {
+  ///@brief Хранит координаты курсора
   struct mouseCoords {
 	int x, y;
   };
 
  private:
   SDL_Event event;
-  Uint8 mouseState{};
+  Uint8 mouseState{};///< хранит состояние мыши
   mouseCoords mouseCoords;
 
  public:
   Uint8 getMouseState() const;
   const SDL_Event &getEvent() const;
 
+  ///@brief обновляет данные о событиях мыши
   void updateEvents() {
 	SDL_PollEvent(&event);
 	mouseState = SDL_GetMouseState(&mouseCoords.x, &mouseCoords.y);
   }
 
+  ///@brief проверяет события на выход из игры
   bool quitEventCheck() {
 	if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
 	  SDL_LogInfo(SDL_LOG_CATEGORY_INPUT, "Got QUIT event");
@@ -36,16 +39,17 @@ class InputManager {
 	}
 	return false;
   }
-
+  ///@brief Возвращает координаты мыши
   [[nodiscard]] const struct mouseCoords &getMouseCoords() const {
 	return mouseCoords;
   }
 };
-
+///@brief Позвращет последее событие
 const SDL_Event &InputManager::getEvent() const {
   return event;
 }
 
+///@brief Возвращает состояние мыши
 Uint8 InputManager::getMouseState() const {
   return mouseState;
 }
