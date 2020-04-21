@@ -29,26 +29,27 @@ class ScreenManager {
  public:
   std::string fontName = "Roboto-Medium";
 
+  ///@brief Возвращает ссылку на окно
   [[nodiscard]] SDL_Window *getWindow() const {
 	return window;
   }
-
+  ///@brief возвращат разрешение экрана по оси X
   [[nodiscard]] int getWindowResolutionX() const {
 	return windowResolutionX;
   }
-
+  ///@brief возвращат разрешение экрана по оси X
   [[nodiscard]] int getWindowResolutionY() const {
 	return windowResolutionY;
   }
-
+  ///@brief возвращает ссылку на рендерер
   [[nodiscard]] SDL_Renderer *getRenderer() const {
 	return renderer;
   }
-
+  ///@brief возвращает размер шрифта
   [[nodiscard]] int getFontSize() const {
 	return fontSize;
   }
-
+  ///@brief возвращает ссылку на менеджер событий
   [[nodiscard]] InputManager *getInputManager() const {
 	return inputManager;
   }
@@ -92,6 +93,10 @@ class ScreenManager {
 	SDL_GetWindowSize(window, &windowResolutionX, &windowResolutionY);
   }
 
+  /**
+   * @brief позволяет изменить размер шрифта
+   * @param size размер шрифта
+  **/
   void changeFontSize(int size) {
 	TTF_CloseFont(font);
 	font = TTF_OpenFont((fontName + ".ttf").c_str(), size);
@@ -103,28 +108,37 @@ class ScreenManager {
 	fontSize = size;
   }
 
+  /**@brief печатает текст
+   * @param text текст который нужно напечатать
+   * @param x местоположение по оси X
+   * @param y Местоположение по оси Y
+   * @param color Цвет текста
+   * @param font_size размер текста
+   */
   void printText(const std::string &text, int x, int y, SDL_Color color = {0, 0, 0},
 				 int font_size = 16) {
-	changeFontSize(font_size);
-	auto surfaceMessage = TTF_RenderUTF8_Solid(font, text.c_str(),
-											   color);// as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
-	auto Message = SDL_CreateTextureFromSurface(renderer,
-												surfaceMessage);//now you can convert it into a texture
-	SDL_Rect Message_rect;                                      //create a rect
-	Message_rect.x = x;                                         //controls the rect's x coordinate
-	Message_rect.y = y;                                         // controls the rect's y coordinate
+	if (getFontSize() != font_size)
+	  changeFontSize(font_size);
+	auto surfaceMessage = TTF_RenderUTF8_Solid(font, text.c_str(), color);// as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
+	auto Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);//now you can convert it into a texture
+	SDL_Rect Message_rect;                                                //create a rect
+	Message_rect.x = x;                                                   //controls the rect's x coordinate
+	Message_rect.y = y;                                                   // controls the rect's y coordinate
 	TTF_SizeUTF8(font, text.c_str(), &Message_rect.w, &Message_rect.h);
-	SDL_RenderCopy(renderer, Message, nullptr,
-				   &Message_rect);//you put the renderer's name first, the Message, the crop size(you can ignore this if you don't want to dabble with cropping), and the rect which is the size and coordinate of your texture
+	SDL_RenderCopy(renderer, Message, nullptr, &Message_rect);//you put the renderer's name first, the Message, the crop size(you can ignore this if you don't want to dabble with cropping), and the rect which is the size and coordinate of your texture
 	SDL_FreeSurface(surfaceMessage);
 	SDL_DestroyTexture(Message);
 	//  delete Message;
   }
-
+  ///@brief Используется для перевода цвета из формата SDL_Color в формат Hex
   static int rgbToHex(SDL_Color rgb) {///< @brief used to convert SDL_Color to hex
 	return rgb.r * rgb.g * rgb.b;
   }
-
+  /**@brief Возращает размер текста
+   * @param _string текст размер котрого нужно узнать
+   * @param _fontSize размер шрифта
+   * @return размер текста в формате {x,y}
+   */
   twoInt getTextSize(const std::string &_string, int _fontSize) {
 	changeFontSize(_fontSize);
 	twoInt widthAndHeight{};
