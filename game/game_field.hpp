@@ -107,13 +107,10 @@ class GameField {
 		if (getElement(i + 1, j + 1)->getState() == 'a') neighbors++;//checking cell on the bottom right
 		if (neighbors < 2) {
 		  cells[i][j].next_state = 'd';
-		  cells[i][j].deathReason = 'l';
 		} else if (neighbors > 3) {
 		  cells[i][j].next_state = 'd';
-		  cells[i][j].deathReason = 'c';
 		} else if (neighbors == 3) {
 		  cells[i][j].next_state = 'b';
-		  cells[i][j].deathReason = 'u';
 		}
 		neighbors = 0;
 	  }
