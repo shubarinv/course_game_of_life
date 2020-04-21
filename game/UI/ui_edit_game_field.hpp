@@ -15,7 +15,7 @@ class uiEditGameField : private virtual UI_Base {
   char startingState = ' ';
 
  public:
-  uiEditGameField(UI_Manager *ui_Manager, SDL_Window *window, std::string _locale, GameField *_gameField) : UI_Base(
+  uiEditGameField(screenManager *ui_Manager, SDL_Window *window, std::string _locale, GameField *_gameField) : UI_Base(
 	  ui_Manager, window,
 	  std::move(_locale)) {
 	gameField = _gameField;

@@ -11,23 +11,24 @@
 #include "ui_manager.hpp"
 
 class uiButton {
-private:
-    SDL_Rect body{};
-    SDL_Color defaultColor{127, 179, 114};
-    SDL_Color hoverColor{89, 150, 74};
-    SDL_Color disabledColor{82, 82, 82};
-    UI_Manager *uiManager{};
-    std::string text = "UNSET";
-    int textPosX;
-    int textPosY;
-    bool enabled{true};
-    bool hover{false};
-    int fontSize{20};
-public:
-    uiButton(const std::string &string, UI_Manager *_uiManager, int x, int y, int width, int height,
-             int _fontSize = 20) {
-        if (_uiManager == nullptr) {
-            std::string error = "UIButton->Constructor->uiManager is null";
+ private:
+  SDL_Rect body{};
+  SDL_Color defaultColor{127, 179, 114};
+  SDL_Color hoverColor{89, 150, 74};
+  SDL_Color disabledColor{82, 82, 82};
+  screenManager *uiManager{};
+  std::string text = "UNSET";
+  int textPosX;
+  int textPosY;
+  bool enabled{true};
+  bool hover{false};
+  int fontSize{20};
+
+ public:
+  uiButton(const std::string &string, screenManager *_uiManager, int x, int y, int width, int height,
+		   int _fontSize = 20) {
+	if (_uiManager == nullptr) {
+	  std::string error = "UIButton->Constructor->uiManager is null";
             SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
             throw std::runtime_error("Unable to button uiManager is null");
         }
@@ -69,16 +70,16 @@ public:
         hover = collisionCheck(x, y);
         if (enabled) {
             if (hover) {
-                SDL_SetRenderDrawColor(uiManager->getRenderer(), hoverColor.r, hoverColor.g, hoverColor.b, 255);
-                SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, UI_Manager::rgbToHex(hoverColor));
-            } else {
-                SDL_SetRenderDrawColor(uiManager->getRenderer(), defaultColor.r, defaultColor.g, defaultColor.b, 255);
-                SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, UI_Manager::rgbToHex(defaultColor));
-            }
+			  SDL_SetRenderDrawColor(uiManager->getRenderer(), hoverColor.r, hoverColor.g, hoverColor.b, 255);
+			  SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, screenManager::rgbToHex(hoverColor));
+			} else {
+			  SDL_SetRenderDrawColor(uiManager->getRenderer(), defaultColor.r, defaultColor.g, defaultColor.b, 255);
+			  SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, screenManager::rgbToHex(defaultColor));
+			}
         } else {
-            SDL_SetRenderDrawColor(uiManager->getRenderer(), disabledColor.r, disabledColor.g, disabledColor.b, 255);
-            SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, UI_Manager::rgbToHex(disabledColor));
-        }
+		  SDL_SetRenderDrawColor(uiManager->getRenderer(), disabledColor.r, disabledColor.g, disabledColor.b, 255);
+		  SDL_FillRect(SDL_GetWindowSurface(uiManager->getWindow()), &body, screenManager::rgbToHex(disabledColor));
+		}
         // Render rect
         SDL_RenderFillRect(uiManager->getRenderer(), &body);
         uiManager->printText(text, textPosX, textPosY, {255, 255, 255}, fontSize);

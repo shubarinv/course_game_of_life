@@ -10,18 +10,18 @@
 #include <iostream>
 #include "../input_manager.hpp"
 
-class UI_Manager {
-private:
-    TTF_Font *font{};
-    SDL_Renderer *renderer;
-    int fontSize = {};
-    int windowResolutionX{0};
-    int windowResolutionY{0};
-    InputManager *inputManager;
-    SDL_Window *window{};
-    struct twoInt {
-        int a;
-        int b;
+class screenManager {
+ private:
+  TTF_Font *font{};
+  SDL_Renderer *renderer;
+  int fontSize = {};
+  int windowResolutionX{0};
+  int windowResolutionY{0};
+  InputManager *inputManager;
+  SDL_Window *window{};
+  struct twoInt {
+	int a;
+	int b;
     };
 public:
     std::string fontName = "Roboto-Medium";
@@ -51,19 +51,19 @@ public:
     }
 
 public:
-    UI_Manager(SDL_Surface *pSurface, SDL_Renderer *pRenderer, SDL_Window *win, InputManager *pManager) {
-        if (TTF_Init() == -1) {
-            std::string error = TTF_GetError();
-            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-            throw std::runtime_error("UI_Manager->TTF_OpenFont: Attempt to open font was unsuccessful");
-        }
+ screenManager(SDL_Surface *pSurface, SDL_Renderer *pRenderer, SDL_Window *win, InputManager *pManager) {
+   if (TTF_Init() == -1) {
+	 std::string error = TTF_GetError();
+	 SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
+	 throw std::runtime_error("screenManager->TTF_OpenFont: Attempt to open font was unsuccessful");
+   }
 
-        font = TTF_OpenFont((fontName + ".ttf").c_str(), 16);
-        if (!font) {
-            std::string error = TTF_GetError();
-            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-            throw std::runtime_error("UI_Manager->TTF_OpenFont: Attempt to open font was unsuccessful");
-        }
+   font = TTF_OpenFont((fontName + ".ttf").c_str(), 16);
+   if (!font) {
+	 std::string error = TTF_GetError();
+	 SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
+	 throw std::runtime_error("screenManager->TTF_OpenFont: Attempt to open font was unsuccessful");
+   }
         renderer = pRenderer;
         window = win;
         inputManager = pManager;
@@ -75,9 +75,9 @@ public:
         font = TTF_OpenFont((fontName + ".ttf").c_str(), size);
         if (!font) {
             std::string error = TTF_GetError();
-            SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-            throw std::runtime_error("UI_Manager->changeFontSize: Attempt to change font size was unsuccessful");
-        }
+			SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
+			throw std::runtime_error("screenManager->changeFontSize: Attempt to change font size was unsuccessful");
+		}
         fontSize = size;
     }
 

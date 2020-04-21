@@ -23,7 +23,7 @@ class Game {
   SDL_Renderer *ren{};
   GameField *gameField{};
   InputManager *inputManager{};
-  UI_Manager *uiManager;
+  screenManager *uiManager;
   Uint64 eButtonPress = 0;
   std::vector<std::vector<Cell>> gameFieldSave;
   char state = 'm';///< r-playing game| p-pause| m-main_Menu| e-Editing field
@@ -56,13 +56,13 @@ class Game {
 	  throw std::runtime_error("Unable to create render (SDL2)");
 	}
 
-	uiManager = new UI_Manager(SDL_GetWindowSurface(win), ren, win,
-							   nullptr);//init UI_Manager and font related stuff
+	uiManager = new screenManager(SDL_GetWindowSurface(win), ren, win,
+								  nullptr);//init screenManager and font related stuff
 	gameField = new GameField(win, ren);
 	gameField->checkForNeighbors();
 	inputManager = new InputManager();
-	uiManager = new UI_Manager(SDL_GetWindowSurface(win), ren, win,
-							   inputManager);//init UI_Manager and font related stuff
+	uiManager = new screenManager(SDL_GetWindowSurface(win), ren, win,
+								  inputManager);//init screenManager and font related stuff
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL2 init - Good\nGame Start");
 	run();// Starts the game
   }

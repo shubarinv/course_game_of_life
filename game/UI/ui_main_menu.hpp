@@ -39,7 +39,7 @@ class UI_MainMenu : private virtual UI_Base {
   uiButton *play_btn;
   uiButton *quit_btn;
 
-  UI_MainMenu(UI_Manager *ui_Manager, SDL_Window *window, std::string _locale)
+  UI_MainMenu(screenManager *ui_Manager, SDL_Window *window, std::string _locale)
 	  : UI_Base(ui_Manager, window, std::move(_locale)) {
 	if (locale == "en") {
 	  play_btn = new uiButton(menuStrings["Start_En"], uiManager,

@@ -54,8 +54,8 @@ class GameField {
 	for (int i = 0; i <= w / 16; ++i) {
 	  vector<Cell> row;
 	  for (int j = 0; j <= h / 16; j++) {
-		row.emplace_back(window, renderer);
-		row.back().setLocation(i, j);
+		row.emplace_back();
+		row.back().setLocation(i, j, window);
 	  }
 	  cells.push_back(row);
 	}
