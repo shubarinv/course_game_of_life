@@ -5,34 +5,32 @@
 #ifndef PROGONHLANG_UI_BASE_HPP
 #define PROGONHLANG_UI_BASE_HPP
 
-
-#include <string>
-#include <map>
-#include <utility>
 #include <SDL_rect.h>
 #include <SDL_surface.h>
+
+#include <map>
+#include <string>
+#include <utility>
+
 #include "ui_manager.hpp"
 
 class UI_Base {
-public:
- UI_Base() {
-   menuStrings["Start_En"] = "Start";
-   menuStrings["Start_Ru"] = "Начать";
+ public:
+  UI_Base() {
 
-   menuStrings["Quit_En"] = "Quit";
-   menuStrings["Quit_Ru"] = "Выход";
+	menuStrings["Start_En"] = "Start";
+	menuStrings["Start_Ru"] = "Начать";
 
-   menuStrings["Settings_En"] = "Settings";
-   menuStrings["Settings_Ru"] = "Настройки";
- }
+	menuStrings["Quit_En"] = "Quit";
+	menuStrings["Quit_Ru"] = "Выход";
 
-protected:
- std::string locale{};
- ScreenManager *screenManager{};
- SDL_Window *win{};
+	menuStrings["Settings_En"] = "Settings";
+	menuStrings["Settings_Ru"] = "Настройки";
+  }
 
- map<string, string> menuStrings;
+ protected:
+  ScreenManager *screenManager{};
+  [[deprecated]] map<string, string> menuStrings;
 };
 
-
-#endif //PROGONHLANG_UI_BASE_HPP
+#endif//PROGONHLANG_UI_BASE_HPP
