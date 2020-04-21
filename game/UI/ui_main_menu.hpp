@@ -18,19 +18,19 @@ class UI_MainMenu : private virtual UI_Base {
 
 	screenManager->printText("//todo upd copyright", screenManager->getWindowResolutionX() / 2 - screenManager->getTextSize("//todo upd copyright", 20).a / 2, screenManager->getWindowResolutionY() - 30, {255, 255, 255}, 20);
   }
-
+  ///@brief Выполняет определённые действия при выполнении условий
   char act() {
 	if (play_btn->isHover() && screenManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
 	  SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "1");
 	  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Rules", "You can edit field by pressing E.", NULL);
 	  SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-	  return 'r';
+	  return 'r'; // запуск игры
 
 	} else if (quit_btn->isHover() && screenManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
-	  return 'q';
+	  return 'q'; // выход из игры
 
 	} else
-	  return 'm';
+	  return 'm'; //< Открывает главное меню
   }
 
   uiButton *play_btn;
