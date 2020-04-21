@@ -31,7 +31,6 @@ class GameField {
 	return aliveCells;
   }
 
- public:
   std::vector<std::vector<Cell>> cells;///< Хранит данные о клетках которые находятся на экране
 
   explicit GameField(ScreenManager *_screenManager) {
