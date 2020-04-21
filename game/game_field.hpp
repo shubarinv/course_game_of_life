@@ -42,11 +42,11 @@ class GameField {
 	screenManager=_screenManager;
 	int h=screenManager->getWindowResolutionY(), w=screenManager->getWindowResolutionX();
 
-	for (int i = 0; i <= w / 16; ++i) {
+	for (int i = 0; i <= h / 16; ++i) {
 	  vector<Cell> row;
-	  for (int j = 0; j <= h / 16; j++) {
+	  for (int j = 0; j <= w / 16; j++) {
 		row.emplace_back();
-		row.back().setLocation(i, j, screenManager->getWindow());
+		row.back().setLocation(j, i, screenManager->getWindow());
 	  }
 	  cells.push_back(row);
 	}
@@ -84,9 +84,9 @@ class GameField {
 	int h, w;
 	SDL_GetWindowSize(screenManager->getWindow(), &w, &h);
 
-	for (int i = 0; i < w / 16; ++i) {
-	  for (int j = 0; j < h / 16; ++j) {
-		cells[i][j].redraw(screenManager->getRenderer());
+    for (auto &row : cells) {
+      for (auto &cell : row) {
+		cell.redraw(screenManager->getRenderer());
 	  }
 	}
   }
