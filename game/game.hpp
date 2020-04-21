@@ -35,7 +35,7 @@ class Game {
     inputManager = new InputManager();
     screenManager = new ScreenManager(inputManager);//init ScreenManager and font related stuff
 	gameField = new GameField(screenManager);
-	gameField->checkForNeighbors();
+	gameField->checkRulesCompliance();
 
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL2 init - Good\nGame Start");
 	run();// Starts the game
@@ -89,7 +89,7 @@ class Game {
 		showDialog = true;
 		if (curTime >= endTime) {
 		  endTime = SDL_GetTicks() + 90;
-		  gameField->checkForNeighbors();
+		  gameField->checkRulesCompliance();
 		  gameField->drawBoard();
 		} else {
 		  gameField->drawBoard();
@@ -100,7 +100,7 @@ class Game {
 	  }
 	  if (state == 'm') {
 		//gameField->drawBoard();
-		//gameField->checkForNeighbors();
+		//gameField->checkRulesCompliance();
 		uiMainMenu.show();
 		state = uiMainMenu.act();
 
