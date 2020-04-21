@@ -31,8 +31,7 @@ class Cell {
 	  return state;
   }
 
-  char next_state = '-'; ///< a-alive d-dead b-born h-hover
-  char deathReason = 'u';// l= not enough neighbours; u= unset; c=to much cells nearby
+  char next_state = '-';///< a-alive d-dead b-born h-hover
   Cell() {
 	block.h = 16;
 	block.w = block.h;
@@ -55,7 +54,7 @@ class Cell {
 		state = 'a';
 		break;
 	}
-	if (state == 'a') {                     ///< клетка жива
+	if (state == 'a') {///< клетка жива
 											// чем больше живет клетка, тем темнее она будет
 	  if (aliveFor >= 0 && aliveFor <= 20) {///До 20 тиков включительно
 		SDL_SetRenderDrawColor(renderer, 14, 255, 0, 255);
@@ -101,10 +100,9 @@ class Cell {
 	return {y / 16, x / 16};
   }
 
-  ///@brief Применяет новое состояние к клетке
+  ///@brief Применяет новое состояние к клетке используется в UiEditGameField
   void applyNewState() {
 	if (next_state != '-') state = next_state;
 	next_state = '-';
   }
-
 };
