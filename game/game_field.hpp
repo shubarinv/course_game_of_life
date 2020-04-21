@@ -16,14 +16,14 @@
 #include <utility>
 #include <vector>
 
+#include "UI/ui_manager.hpp"
 #include "cell.hpp"
 
 using namespace std;
 
 class GameField {
  private:
-  SDL_Window *window;
-  SDL_Renderer *renderer;
+  ScreenManager *screenManager;
   int aliveCells = 0;
 
  public:
@@ -34,28 +34,19 @@ class GameField {
  public:
   std::vector<std::vector<Cell>> cells;
 
-  explicit GameField(SDL_Window *game_window, SDL_Renderer *_renderer) {
-	window = game_window;
-
-	if (window == nullptr) {
-	  std::string error = SDL_GetError();
-	  SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "GameField->constructor: Window is null");
-	  throw std::runtime_error("GameField->constructor: Window is null");
+  explicit GameField(ScreenManager *_screenManager) {
+	if (_screenManager == nullptr) {
+	  SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "Error: GameField->constructor: _screenManager is null");
+	  throw std::runtime_error("Error: GameField->constructor: _screenManager is null, this shouldn't have happened");
 	}
-	if (_renderer == nullptr) {
-	  std::string error = SDL_GetError();
-	  SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "GameField->constructor: _renderer is null");
-	  throw std::runtime_error("GameField->constructor: _renderer is null");
-	}
-	renderer = _renderer;
-	int h, w;
-	SDL_GetWindowSize(window, &w, &h);
+	screenManager=_screenManager;
+	int h=screenManager->getWindowResolutionY(), w=screenManager->getWindowResolutionX();
 
 	for (int i = 0; i <= w / 16; ++i) {
 	  vector<Cell> row;
 	  for (int j = 0; j <= h / 16; j++) {
 		row.emplace_back();
-		row.back().setLocation(i, j, window);
+		row.back().setLocation(i, j, screenManager->getWindow());
 	  }
 	  cells.push_back(row);
 	}
@@ -91,11 +82,11 @@ class GameField {
 	}
 
 	int h, w;
-	SDL_GetWindowSize(window, &w, &h);
+	SDL_GetWindowSize(screenManager->getWindow(), &w, &h);
 
 	for (int i = 0; i < w / 16; ++i) {
 	  for (int j = 0; j < h / 16; ++j) {
-		cells[i][j].redraw();
+		cells[i][j].redraw(screenManager->getRenderer());
 	  }
 	}
   }
@@ -145,15 +136,26 @@ class GameField {
   }
 
   Cell *getElement(int column, int row) {
-	if (column < 0)
-	  column = cells.size() - 1;
-	if (column == cells.size())
-	  column = 0;
-	if (row < 0)
-	  row = cells[column].size() - 1;
-	if (row == cells[column].size())
-	  row = 0;
-	return &cells[column][row];
+    if (column < 0)
+      column = cells.size() - 1;
+    if (column == cells.size())
+      column = 0;
+    if (row < 0)
+      row = cells[column].size() - 1;
+    if (row == cells[column].size())
+      row = 0;
+    return &cells[column][row];
+  }
+  Cell *getElement(twoInt coords) {
+    if (coords.a < 0)
+      coords.a = cells.size() - 1;
+    if (coords.a == cells.size())
+      coords.a = 0;
+    if (coords.b < 0)
+      coords.b = cells[coords.a].size() - 1;
+    if (coords.b == cells[coords.a].size())
+      coords.b = 0;
+    return &cells[coords.a][coords.b];
   }
 
   std::vector<std::vector<Cell>> getField() {

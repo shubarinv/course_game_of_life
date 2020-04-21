@@ -6,10 +6,10 @@
 #include <stdexcept>
 #include <string>
 
+struct twoInt {
+  int a, b;
+};
 class Cell {
-  struct twoInt {
-	int a, b;
-  };
 
  private:
   SDL_Rect block{};///@brief Тело клетки
@@ -25,7 +25,7 @@ class Cell {
    * @brief позволяет получить состояние клетки
    * @returns если клетка не мертва, не имеет неопределённое состояние и на неё не наведен курсор в режиме редактирования, то клетка считается живой
    * иначе клетка считается мёртвой**/
-  char getState() const {
+  [[nodiscard]] char getState() const {
 	if (state != 'd' && state != 'u' && state != 'h') return 'a';
 	else
 	  return state;
@@ -85,7 +85,7 @@ class Cell {
 	  block.x = x * block.h;
 	  block.y = y * block.h;
 	} else {
-	  std::string error = "ОШИБКА: Cell->SetLocation новые координаты клетки выходят за границы экрана X:" + std::to_string(x) + " Y:" + std::to_string(y * block.h) + " в то время как максимально возможные значкения: " + std::to_string(w) + "x" + std::to_string(h);
+	  std::string error = "ОШИБКА: Cell->SetLocation новые координаты клетки выходят за границы экрана X:" + std::to_string(x) + " Y:" + std::to_string(y * block.h) + " в то время как максимально возможные значения: " + std::to_string(w) + "x" + std::to_string(h);
 	  SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
 	  throw std::runtime_error(error);
 	}
@@ -97,8 +97,8 @@ class Cell {
 	 * @param X координата верхнего левого угла клетки по оси X
 	 * @returns Возвращает "относительное"(по отношению к другим клеткам) положение клетки например (2,3) - 2 по оси Y,3 по оси X
 	 * **/
-  static twoInt getRelativeLocation(int y, int x) {
-	return {x / 16, y / 16};
+  static twoInt getRelativeLocation(int x, int y) {
+	return {y / 16, x / 16};
   }
 
   ///@brief Применяет новое состояние к клетке
@@ -106,4 +106,5 @@ class Cell {
 	if (next_state != '-') state = next_state;
 	next_state = '-';
   }
+
 };

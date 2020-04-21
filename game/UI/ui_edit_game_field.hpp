@@ -15,28 +15,24 @@ class uiEditGameField : private virtual UI_Base {
   char startingState = ' ';
 
  public:
-  uiEditGameField(screenManager *ui_Manager, SDL_Window *window, std::string _locale, GameField *_gameField) : UI_Base(
-	  ui_Manager, window,
-	  std::move(_locale)) {
+  uiEditGameField(ScreenManager *_screenManager, GameField *_gameField) {
+	if (_screenManager == nullptr) {
+	  throw runtime_error("ERROR: UIEditGameField(ScreenManager*,GameField*) ScreenManager is NULL");
+	}
+	screenManager = _screenManager;
 	gameField = _gameField;
   }
 
   void show() {
-	uiManager->printText("EDIT", uiManager->getWindowResolutionX() / 2 - uiManager->getTextSize("EDIT", 30).a,
-						 uiManager->getTextSize("EDIT", 30).b / 2, {255, 255, 255}, 30);
-	Cell *tmp = gameField->getElement(Cell::getRelativeLocation(uiManager->getInputManager()->getMouseCoords().x,
-																uiManager->getInputManager()->getMouseCoords().y)
-										  .a,
-									  Cell::getRelativeLocation(uiManager->getInputManager()->getMouseCoords().x,
-																uiManager->getInputManager()->getMouseCoords().y)
-										  .b);
+	screenManager->printText("EDIT", screenManager->getWindowResolutionX() / 2 - screenManager->getTextSize("EDIT", 30).a, screenManager->getTextSize("EDIT", 30).b / 2, {255, 255, 255}, 30);
+	Cell *tmp = gameField->getElement(Cell::getRelativeLocation(screenManager->getInputManager()->getMouseCoords().x, screenManager->getInputManager()->getMouseCoords().y));
 	if (prevCell != tmp && prevCell != nullptr) {
 	  prevCell->applyNewState();
 	  startingState = tmp->getState();
 	  tmp->setState('h');
 	  tmp->next_state = startingState;
 	}
-	if (uiManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
+	if (screenManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
 	  if (tmp->next_state == 'a') {
 		tmp->setState('d');
 		tmp->next_state = '-';

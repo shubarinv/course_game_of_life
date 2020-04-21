@@ -15,10 +15,7 @@
 
 class UI_Base {
 public:
- UI_Base(screenManager *ui_Manager, SDL_Window *window, std::string _locale = "en") {
-   uiManager = ui_Manager;
-   win = window;
-
+ UI_Base() {
    menuStrings["Start_En"] = "Start";
    menuStrings["Start_Ru"] = "Начать";
 
@@ -27,13 +24,13 @@ public:
 
    menuStrings["Settings_En"] = "Settings";
    menuStrings["Settings_Ru"] = "Настройки";
-   locale = std::move(_locale);
  }
 
 protected:
  std::string locale{};
- screenManager *uiManager{};
+ ScreenManager *screenManager{};
  SDL_Window *win{};
+
  map<string, string> menuStrings;
 };
 

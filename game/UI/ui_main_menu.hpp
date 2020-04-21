@@ -13,25 +13,22 @@
 class UI_MainMenu : private virtual UI_Base {
  public:
   void show() {
-	play_btn->draw(uiManager->getInputManager()->getMouseCoords().x,
-				   uiManager->getInputManager()->getMouseCoords().y);
-	quit_btn->draw(uiManager->getInputManager()->getMouseCoords().x,
-				   uiManager->getInputManager()->getMouseCoords().y);
-	uiManager->printText(
-		"Made by Vladimir Shubarin in 2020",
-		uiManager->getWindowResolutionX() / 2 - uiManager->getTextSize("Made by Vladimir Shubarin in 2020", 20).a / 2,
-		uiManager->getWindowResolutionY() - 30, {255, 255, 255}, 20);
+	play_btn->draw(screenManager->getInputManager()->getMouseCoords().x, screenManager->getInputManager()->getMouseCoords().y);
+	quit_btn->draw(screenManager->getInputManager()->getMouseCoords().x, screenManager->getInputManager()->getMouseCoords().y);
+
+	screenManager->printText("//todo upd copyright", screenManager->getWindowResolutionX() / 2 - screenManager->getTextSize("//todo upd copyright", 20).a / 2, screenManager->getWindowResolutionY() - 30, {255, 255, 255}, 20);
   }
 
   char act() {
-	if (play_btn->isHover() && uiManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
+	if (play_btn->isHover() && screenManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
 	  SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "1");
-	  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Rules",
-							   "You can edit field by pressing E.", NULL);
+	  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Rules", "You can edit field by pressing E.", NULL);
 	  SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
 	  return 'r';
-	} else if (quit_btn->isHover() && uiManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
+
+	} else if (quit_btn->isHover() && screenManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
 	  return 'q';
+
 	} else
 	  return 'm';
   }
@@ -39,21 +36,10 @@ class UI_MainMenu : private virtual UI_Base {
   uiButton *play_btn;
   uiButton *quit_btn;
 
-  UI_MainMenu(screenManager *ui_Manager, SDL_Window *window, std::string _locale)
-	  : UI_Base(ui_Manager, window, std::move(_locale)) {
-	if (locale == "en") {
-	  play_btn = new uiButton(menuStrings["Start_En"], uiManager,
-							  uiManager->getWindowResolutionX() / 2 - 100, 150,
-							  200, 50, 20);
-	  quit_btn = new uiButton(menuStrings["Quit_En"], uiManager, uiManager->getWindowResolutionX() / 2 - 100, 250, 200, 50, 20);
-	} else {
-	  play_btn = new uiButton(menuStrings["Start_Ru"], uiManager,
-							  uiManager->getWindowResolutionX() / 2 - 100, 150,
-							  200, 50, 20);
-	  quit_btn = new uiButton(menuStrings["Quit_Ru"], uiManager,
-							  uiManager->getWindowResolutionX() / 2 - 100, 250,
-							  200, 50, 20);
-	}
+  explicit UI_MainMenu(ScreenManager *_screenManager) {
+	screenManager=_screenManager;
+	play_btn = new uiButton(menuStrings["Start_En"], screenManager, screenManager->getWindowResolutionX() / 2 - 100, 150, 200, 50, 20);
+	quit_btn = new uiButton(menuStrings["Quit_En"], screenManager, screenManager->getWindowResolutionX() / 2 - 100, 250, 200, 50, 20);
   }
 
   ~UI_MainMenu() {

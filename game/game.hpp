@@ -18,12 +18,9 @@
 
 class Game {
  private:
-  SDL_DisplayMode DM{};
-  SDL_Window *win{};
-  SDL_Renderer *ren{};
   GameField *gameField{};
   InputManager *inputManager{};
-  screenManager *uiManager;
+  ScreenManager *screenManager;
   Uint64 eButtonPress = 0;
   std::vector<std::vector<Cell>> gameFieldSave;
   char state = 'm';///< r-playing game| p-pause| m-main_Menu| e-Editing field
@@ -35,34 +32,11 @@ class Game {
 	  SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
 	  throw std::runtime_error("Unable to init SDL2");
 	}
-	SDL_GetCurrentDisplayMode(0, &DM);
-	auto Width = DM.w;
-	auto Height = DM.h;
-	win = SDL_CreateWindow("The Game Of Life", 0, 0, Width, Height, SDL_WINDOW_SHOWN);
-	SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN);
-
-	if (win == nullptr) {
-	  std::string error = SDL_GetError();
-	  SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-	  throw std::runtime_error("Unable to create window (SDL2)");
-	}
-	SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
-
-	ren = SDL_CreateRenderer(win, -1, 0);
-	if (ren == nullptr) {
-	  SDL_DestroyWindow(win);
-	  std::string error = SDL_GetError();
-	  SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-	  throw std::runtime_error("Unable to create render (SDL2)");
-	}
-
-	uiManager = new screenManager(SDL_GetWindowSurface(win), ren, win,
-								  nullptr);//init screenManager and font related stuff
-	gameField = new GameField(win, ren);
+    inputManager = new InputManager();
+    screenManager = new ScreenManager(inputManager);//init ScreenManager and font related stuff
+	gameField = new GameField(screenManager);
 	gameField->checkForNeighbors();
-	inputManager = new InputManager();
-	uiManager = new screenManager(SDL_GetWindowSurface(win), ren, win,
-								  inputManager);//init screenManager and font related stuff
+
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL2 init - Good\nGame Start");
 	run();// Starts the game
   }
@@ -77,18 +51,19 @@ class Game {
 	int frameDelay = 2;
 	bool showDialog = true;
 	Uint64 lastSave = SDL_GetTicks();
-	UI_MainMenu uiMainMenu(uiManager, win, "ru");
 
-	uiEditGameField uiEditGameField(uiManager, win, "ru", gameField);
-	SDL_RaiseWindow(win);
+	UI_MainMenu uiMainMenu(screenManager);
+	uiEditGameField uiEditGameField(screenManager, gameField);
+
+	SDL_RaiseWindow(screenManager->getWindow());
 
 	while (!inputManager->quitEventCheck()) {
-	  SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
-	  if (SDL_RenderClear(ren) < 0) {
-		SDL_DestroyWindow(win);
+	  SDL_SetRenderDrawColor(screenManager->getRenderer(), 255, 255, 255, 255);
+	  if (SDL_RenderClear(screenManager->getRenderer()) < 0) {
+		SDL_DestroyWindow(screenManager->getWindow());
 		std::string error = SDL_GetError();
 		SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-		throw std::runtime_error("Unable to clear render (SDL2)");
+		throw std::runtime_error("Unable to clear screenManager->getRenderer()der (SDL2)");
 	  }
 	  frameStart = SDL_GetTicks();
 	  curTime = SDL_GetTicks();
@@ -106,7 +81,7 @@ class Game {
 			break;
 		  case SDLK_s:
 			if (SDL_GetTicks() - lastSave >= 2000) {
-			   //gameField->save();
+			  //gameField->save();
 			  cout << "Saved!" << endl;
 			  lastSave = SDL_GetTicks();
 			}
@@ -121,7 +96,7 @@ class Game {
 		}
 
 		gameField->drawBoard();
-		uiManager->printText("Cells: " + to_string(gameField->getAliveCells()), 10, 20, {0, 0, 0}, 25);
+		screenManager->printText("Cells: " + to_string(gameField->getAliveCells()), 10, 20, {0, 0, 0}, 25);
 	  }
 	  if (state == 'm') {
 		//gameField->drawBoard();
@@ -129,38 +104,18 @@ class Game {
 		uiMainMenu.show();
 		state = uiMainMenu.act();
 
-		if (state == 'r') {gameField->clearBoard();gameField->randomiseField();}
+		if (state == 'r') {
+		  gameField->clearBoard();
+		  gameField->randomiseField();
+		}
 	  }
-	  /* if (inputManager->getEvent().key.keysym.sym == SDLK_p) {
-				 if (inputManager->getEvent().type == SDL_KEYDOWN &&
-					 state == 'p')
-					 state = 'r';
-				 else state = 'p';
-				 continue;
-			 }
-			 if (state == 'p') {
-				 uiManager->printText("PAUSE",
-									  uiManager->getWindowResolutionX() /
-									  2 - uiManager->getTextSize(
-											  "PAUSE",
-											  40).a,
-									  uiManager->getWindowResolutionY() /
-									  2 - uiManager->getTextSize(
-											  "PAUSE",
-											  40).b, {255, 0, 0}, 40);
-				 frameStart = SDL_GetTicks();
-				 SDL_RenderPresent(ren);
-				 continue;
 
-			 }*/
 	  if (inputManager->getEvent().key.keysym.sym == SDLK_e && inputManager->getEvent().type == SDL_KEYDOWN && state == 'e' && SDL_GetTicks() - eButtonPress > 1000) {
 		eButtonPress = SDL_GetTicks();
 		state = 'r';
 		if (gameField->countAliveCells() > 300)
-		  uiManager->printText("Wait a sec please...",
-							   uiManager->getWindowResolutionX() / 2 - uiManager->getTextSize("Wait a sec please...", 40).a,
-							   uiManager->getWindowResolutionY() / 2 - 20, {255, 0, 0}, 40);
-		SDL_RenderPresent(ren);
+		  screenManager->printText("Wait a sec please...", screenManager->getWindowResolutionX() / 2 - screenManager->getTextSize("Wait a sec please...", 40).a, screenManager->getWindowResolutionY() / 2 - 20, {255, 0, 0}, 40);
+		SDL_RenderPresent(screenManager->getRenderer());
 		continue;
 	  }
 	  if (state == 'r') {
@@ -191,12 +146,12 @@ class Game {
 		showDialog = false;
 
 		gameField->drawBoard();
-		uiManager->printText("Cells: " + to_string(gameField->countAliveCells()), 10, 20, {247, 217, 63}, 25);
+		screenManager->printText("Cells: " + to_string(gameField->countAliveCells()), 10, 20, {247, 217, 63}, 25);
 		uiEditGameField.show();
 	  }
 	  if (state == 'q') break;
 
-	  SDL_RenderPresent(ren);
+	  SDL_RenderPresent(screenManager->getRenderer());
 	  frameTime = SDL_GetTicks() - frameStart;
 	  if (frameDelay > frameTime) {
 		SDL_Delay(frameDelay - frameTime);
@@ -204,12 +159,12 @@ class Game {
 	}
 	delete gameField;
 	delete inputManager;
-	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying render");
-	SDL_DestroyRenderer(ren);
+	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroying renderer");
+	SDL_DestroyRenderer(screenManager->getRenderer());
 	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Render Destroyed\nDestroying window");
-	SDL_DestroyWindow(win);
+	SDL_DestroyWindow(screenManager->getWindow());
 	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Destroyed window");
-	free(uiManager);
+	free(screenManager);
 	return 0;
   }
 };
