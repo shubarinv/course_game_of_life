@@ -7,6 +7,7 @@
 
 #include <utility>
 
+#include "ui_FullscreenNotice.hpp"
 #include "ui_base.hpp"
 #include "ui_button.hpp"
 
@@ -16,14 +17,13 @@ class UI_MainMenu : private virtual UI_Base {
 	play_btn->draw(screenManager->getInputManager()->getMouseCoords().x, screenManager->getInputManager()->getMouseCoords().y);
 	quit_btn->draw(screenManager->getInputManager()->getMouseCoords().x, screenManager->getInputManager()->getMouseCoords().y);
 
-	screenManager->printText("//todo upd copyright", screenManager->getWindowResolutionX() / 2 - screenManager->getTextSize("//todo upd copyright", 20).a / 2, screenManager->getWindowResolutionY() - 30, {255, 255, 255}, 20);
+	screenManager->printText("Сделала Анна Перова (И585)", screenManager->getWindowResolutionX() / 2 - screenManager->getTextSize("Сделала Анна Перова (И585)", 20).a / 2, screenManager->getWindowResolutionY() - 30, {80, 0, 80}, 20);
   }
   ///@brief Выполняет определённые действия при выполнении условий
   char act() {
 	if (play_btn->isHover() && screenManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {
-	  SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "1");
-	  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Rules", "You can edit field by pressing E.", NULL);
-	  SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
+	  uiFullscreenNotice MainMenuNotice(screenManager, "Для редактирования поля нажмите 'E', Для выхода 'ESC'");
+      MainMenuNotice.show();
 	  return 'r';// запуск игры
 
 	} else if (quit_btn->isHover() && screenManager->getInputManager()->getMouseState() & SDL_BUTTON_LMASK) {

@@ -10,9 +10,10 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "UI/screenManager.hpp"
 #include "UI/ui_edit_game_field.hpp"
 #include "UI/ui_main_menu.hpp"
-#include "UI/ui_manager.hpp"
+#include "UI/ui_FullscreenNotice.hpp"
 #include "game_field.hpp"
 #include "input_manager.hpp"
 
@@ -32,8 +33,8 @@ class Game {
 	  SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
 	  throw std::runtime_error("Unable to init SDL2");
 	}
-    inputManager = new InputManager();
-    screenManager = new ScreenManager(inputManager);//init ScreenManager and font related stuff
+	inputManager = new InputManager();
+	screenManager = new ScreenManager(inputManager);//init ScreenManager and font related stuff
 	gameField = new GameField(screenManager);
 	gameField->checkRulesCompliance();
 
@@ -63,7 +64,7 @@ class Game {
 		SDL_DestroyWindow(screenManager->getWindow());
 		std::string error = SDL_GetError();
 		SDL_LogCritical(SDL_LOG_CATEGORY_ERROR, "%s", error.c_str());
-		throw std::runtime_error("Unable to clear screenManager->getRenderer()der (SDL2)");
+		throw std::runtime_error("Unable to clear screenManager->getRenderer() (SDL2)");
 	  }
 	  frameStart = SDL_GetTicks();
 	  curTime = SDL_GetTicks();
@@ -99,8 +100,6 @@ class Game {
 		screenManager->printText("Cells: " + to_string(gameField->getAliveCells()), 10, 20, {0, 0, 0}, 25);
 	  }
 	  if (state == 'm') {
-		//gameField->drawBoard();
-		//gameField->checkRulesCompliance();
 		uiMainMenu.show();
 		state = uiMainMenu.act();
 
@@ -133,13 +132,16 @@ class Game {
 			}
 			break;
 		}
-		if (showDialog) {
+		if (showDialog) { /* Не используется из-за багов на windows и mac
 		  SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "1");
 		  SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
 								   "EDIT MODE",
 								   "You are entering edit mode.\nTo clear field press 'C'\nTo reset all changes press 'R'\nTo quit press 'E'",
 								   NULL);
-		  SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
+		  SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");*/
+		  uiFullscreenNotice editingNotice(screenManager,"Вы открыли режиим редактирования. Для отчистки поля нажмите 'C'. Для того чтобы отменить все изменения нажмите 'R'. Для выхода нажмите 'E'");
+          editingNotice.show();
+
 		  gameFieldSave = gameField->getField();
 		  frameStart = SDL_GetTicks();
 		}
