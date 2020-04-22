@@ -14,6 +14,7 @@
 class UI_MainMenu : private virtual UI_Base {
  public:
   void show() {
+	screenManager->printText("The Game Of Life",screenManager->getWindowResolutionX() / 2,50,{90,90,90},35,true);
 	play_btn->draw(screenManager->getInputManager()->getMouseCoords().x, screenManager->getInputManager()->getMouseCoords().y);
 	quit_btn->draw(screenManager->getInputManager()->getMouseCoords().x, screenManager->getInputManager()->getMouseCoords().y);
 
