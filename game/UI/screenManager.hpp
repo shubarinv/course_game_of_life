@@ -2,8 +2,8 @@
 // Created by vhundef on 24.12.2019.
 //
 
-#ifndef PROGONHLANG_UI_MANAGER_HPP
-#define PROGONHLANG_UI_MANAGER_HPP
+#ifndef PROGONHLANG_SCREENMANAGER_HPP
+#define PROGONHLANG_SCREENMANAGER_HPP
 
 #include <SDL_ttf.h>
 
@@ -114,16 +114,21 @@ class ScreenManager {
    * @param y Местоположение по оси Y
    * @param color Цвет текста
    * @param font_size размер текста
+   * @param centred Должен ли тескст быть по центру указанных координат
    */
-  void printText(const std::string &text, int x, int y, SDL_Color color = {0, 0, 0},
-				 int font_size = 16) {
+  void printText(const std::string &text, int x, int y, SDL_Color color = {0, 0, 0}, int font_size = 16, bool centred = false) {
 	if (getFontSize() != font_size)
 	  changeFontSize(font_size);
 	auto surfaceMessage = TTF_RenderUTF8_Solid(font, text.c_str(), color);// as TTF_RenderText_Solid could only be used on SDL_Surface then you have to create the surface first
 	auto Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);//now you can convert it into a texture
 	SDL_Rect Message_rect;                                                //create a rect
-	Message_rect.x = x;                                                   //controls the rect's x coordinate
-	Message_rect.y = y;                                                   // controls the rect's y coordinate
+    if (centred) {
+      Message_rect.x = x - getTextSize(text, font_size).a / 2;  //controls the rect's x coordinate
+      Message_rect.y = y - getTextSize(text, font_size).b / 2; // controls the rect's y coordinate
+    } else {
+      Message_rect.x = x;  //controls the rect's x coordinate
+      Message_rect.y = y; // controls the rect's y coordinate
+    }
 	TTF_SizeUTF8(font, text.c_str(), &Message_rect.w, &Message_rect.h);
 	SDL_RenderCopy(renderer, Message, nullptr, &Message_rect);//you put the renderer's name first, the Message, the crop size(you can ignore this if you don't want to dabble with cropping), and the rect which is the size and coordinate of your texture
 	SDL_FreeSurface(surfaceMessage);
@@ -147,4 +152,4 @@ class ScreenManager {
   }
 };
 
-#endif//PROGONHLANG_UI_MANAGER_HPP
+#endif//PROGONHLANG_SCREENMANAGER_HPP

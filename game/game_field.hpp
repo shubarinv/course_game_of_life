@@ -16,7 +16,7 @@
 #include <utility>
 #include <vector>
 
-#include "UI/ui_manager.hpp"
+#include "UI/screenManager.hpp"
 #include "cell.hpp"
 
 using namespace std;

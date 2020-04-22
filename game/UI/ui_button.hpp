@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include "ui_manager.hpp"
+#include "screenManager.hpp"
 
 class uiButton {
  private:
